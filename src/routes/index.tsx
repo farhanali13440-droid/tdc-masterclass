@@ -384,7 +384,8 @@ function SalesPage() {
                   ))}
                 </dl>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Date, time and duration will be confirmed by The Diabetes Centre Pakistan.
+                  Pakistan Standard Time (PKT / UTC+5). Joining details are shared by The Diabetes
+                  Centre Pakistan after payment verification.
                 </p>
               </div>
               <div className="lg:w-64">
