@@ -138,10 +138,13 @@ function ThankYouPage() {
             <div className="mt-10 rounded-3xl border border-border bg-tint p-6">
               <TdcLogo />
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Need help with your registration? Reply on the same WhatsApp number you used for
-                the Easypaisa payment confirmation:{" "}
-                <strong className="text-navy">0313 5944817</strong>.
+                Please watch for further masterclass instructions from The Diabetes Centre
+                Pakistan on WhatsApp and email. Need help with your registration? Message us on{" "}
+                <strong className="text-navy">{WHATSAPP_NUMBER}</strong>.
               </p>
+              <WhatsAppButton size="md" className="mt-4">
+                Chat With Us on WhatsApp
+              </WhatsAppButton>
             </div>
 
             <div className="mt-10 flex justify-center">
