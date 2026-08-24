@@ -887,6 +887,15 @@ function SalesPage() {
               </AccordionItem>
             ))}
           </Accordion>
+          <div className="mx-auto mt-10 max-w-3xl rounded-3xl border border-border bg-tint p-6 text-center">
+            <h3 className="text-xl font-extrabold text-navy">Still Have Questions?</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Chat with our team on WhatsApp — we'll help you register.
+            </p>
+            <WhatsAppButton size="md" className="mt-4">
+              Chat With Us on WhatsApp
+            </WhatsAppButton>
+          </div>
         </Section>
 
         {/* FINAL CTA */}
@@ -902,13 +911,21 @@ function SalesPage() {
               Your health deserves more than guesswork. Start by understanding diabetes, food,
               blood sugar and lifestyle.
             </p>
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-navy-foreground/90">
+              {EVENT_DATE} · {EVENT_TIME}
+            </p>
+            <Countdown variant="inverse" size="sm" className="mx-auto" />
             <CtaButton event="final" variant="light">
-              JOIN DIABETES CONTROL MASTERCLASS — PKR 499
+              JOIN DIABETES CONTROL MASTERCLASS — {EVENT_FEE}
             </CtaButton>
+            <WhatsAppButton variant="light" size="md">
+              Have Questions? Chat With Us on WhatsApp
+            </WhatsAppButton>
           </div>
         </Section>
       </main>
       <StickyMobileCta />
+      <FloatingWhatsApp />
       <SiteFooter />
     </div>
   );
