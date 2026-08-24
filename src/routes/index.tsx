@@ -314,12 +314,13 @@ function SalesPage() {
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <CtaButton event="hero">JOIN THE MASTERCLASS — PKR 499</CtaButton>
               </div>
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
-                <span className="text-sm font-semibold text-muted-foreground">
-                  By The Diabetes Centre Pakistan
-                </span>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-2">
                 <TdcLogo />
+                <span className="text-sm font-semibold text-muted-foreground">
+                  A masterclass by The Diabetes Centre Pakistan
+                </span>
               </div>
+
             </div>
             <div className="relative">
               <div className="absolute -inset-4 -z-10 rounded-[2.5rem] bg-brand-gradient opacity-15 blur-2xl" />
