@@ -1,17 +1,28 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   BadgeCheck,
+  Building2,
+  CalendarDays,
+  Check,
+  Clock3,
+  Copy,
   FileUp,
   Loader2,
   Lock,
   ShieldCheck,
-  Smartphone,
   Wallet,
 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { z } from "zod";
 
 import { TdcLogo } from "@/components/tdc/brand";
+import {
+  EVENT_DATE,
+  EVENT_FEE,
+  EVENT_TIME,
+  FloatingWhatsApp,
+  WhatsAppButton,
+} from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -24,7 +35,7 @@ export const Route = createFileRoute("/checkout")({
       {
         name: "description",
         content:
-          "Register for the Diabetes Control Masterclass by The Diabetes Centre Pakistan. Pay PKR 499 via Easypaisa and upload your payment screenshot.",
+          "Register for the Diabetes Control Masterclass on 6 September 2026, 8:00 PM–10:00 PM PKT. Transfer PKR 499 by bank and upload your payment screenshot.",
       },
       { property: "og:title", content: "Register — Diabetes Control Masterclass" },
       {
@@ -41,9 +52,23 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
-const EASYPAISA_NUMBER = "0313 5944817";
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
+
+const BANK_DETAILS = [
+  { label: "Bank", value: "Dubai Islamic Bank", copy: false },
+  { label: "Account Title", value: "The diabetes center", copy: true },
+  { label: "Account Number", value: "155380005", copy: true },
+  { label: "IBAN", value: "PK76DUIB0000000155380005", copy: true },
+];
+
+const howToRegister = [
+  "Step 1: Transfer PKR 499 to the bank account below.",
+  "Step 2: Save your successful payment receipt/screenshot.",
+  "Step 3: Complete the registration form.",
+  "Step 4: Upload your payment screenshot.",
+  "Step 5: Submit your registration.",
+];
 
 const schema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name").max(100),
@@ -68,16 +93,46 @@ const schema = z.object({
 
 type Errors = Partial<Record<string, string>>;
 
-const steps = [
-  {
-    n: "Step 1",
-    title: `Send PKR 499 through Easypaisa to ${EASYPAISA_NUMBER}`,
-    icon: Wallet,
-  },
-  { n: "Step 2", title: "Take a screenshot of your successful payment.", icon: Smartphone },
-  { n: "Step 3", title: "Upload the screenshot in the form.", icon: FileUp },
-  { n: "Step 4", title: "Submit your registration.", icon: BadgeCheck },
-];
+function CopyButton({ value, label }: { value: string; label: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      const el = document.createElement("textarea");
+      el.value = value;
+      el.setAttribute("readonly", "");
+      el.style.position = "fixed";
+      el.style.opacity = "0";
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      aria-label={`Copy ${label}`}
+      className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-brand/30 bg-background px-3 text-xs font-bold text-brand transition-colors hover:bg-tint"
+    >
+      {copied ? (
+        <>
+          <Check className="h-3.5 w-3.5" aria-hidden="true" /> Copied!
+        </>
+      ) : (
+        <>
+          <Copy className="h-3.5 w-3.5" aria-hidden="true" /> Copy
+        </>
+      )}
+    </button>
+  );
+}
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -200,14 +255,35 @@ function CheckoutPage() {
         </div>
       </header>
 
-      <main id="checkout-page" className="flex-1 px-5 py-10 sm:px-8 sm:py-14">
+      <main id="checkout-page" className="flex-1 px-5 py-10 pb-24 sm:px-8 sm:py-14">
         <div className="mx-auto w-full max-w-5xl">
-          <h1 className="text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
-            Register For The Diabetes Control Masterclass
-          </h1>
-          <p className="mt-3 max-w-2xl text-muted-foreground">
-            Complete the short form below, pay PKR 499 through Easypaisa and upload your payment
-            screenshot. Our team will verify and share the masterclass details with you.
+          <div className="rounded-[2rem] border border-border bg-card p-6 shadow-card sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-5">
+              <div className="min-w-0">
+                <h1 className="text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+                  Diabetes Control Masterclass
+                </h1>
+                <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-navy">
+                  <span className="inline-flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_DATE}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Clock3 className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_TIME}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Wallet className="h-4 w-4 text-brand" aria-hidden="true" /> Registration Fee:{" "}
+                    {EVENT_FEE}
+                  </span>
+                </p>
+              </div>
+              <TdcLogo className="shrink-0" />
+            </div>
+          </div>
+
+          <p className="mt-6 max-w-2xl text-muted-foreground">
+            Complete the short form below, transfer PKR 499 to the bank account shown and upload
+            your payment screenshot. Our team will verify and share the masterclass details with
+            you.
           </p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
@@ -276,25 +352,57 @@ function CheckoutPage() {
               </fieldset>
 
               <fieldset className="space-y-4" disabled={submitting}>
-                <legend className="text-lg font-bold text-navy">Payment — Easypaisa</legend>
+                <legend className="text-lg font-bold text-navy">
+                  Pay Registration Fee — {EVENT_FEE}
+                </legend>
+
                 <div className="rounded-2xl bg-tint p-5">
-                  <p className="text-sm font-semibold text-navy">Easypaisa</p>
-                  <p className="mt-1 select-all text-2xl font-extrabold tracking-tight text-brand">
-                    {EASYPAISA_NUMBER}
+                  <p className="text-sm font-bold uppercase tracking-[0.14em] text-brand">
+                    How to Register
                   </p>
-                  <ol className="mt-5 space-y-3">
-                    {steps.map((step) => (
-                      <li key={step.n} className="flex items-start gap-3">
-                        <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-background text-brand">
-                          <step.icon className="h-4 w-4" aria-hidden="true" />
-                        </span>
-                        <p className="min-w-0 text-sm text-navy">
-                          <span className="font-bold">{step.n}: </span>
-                          {step.title}
-                        </p>
+                  <ol className="mt-4 space-y-2.5">
+                    {howToRegister.map((step) => (
+                      <li key={step} className="flex items-start gap-3 text-sm text-navy">
+                        <BadgeCheck
+                          className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                          aria-hidden="true"
+                        />
+                        <span className="min-w-0">{step}</span>
                       </li>
                     ))}
                   </ol>
+                </div>
+
+                <div className="rounded-2xl border border-brand/20 bg-background p-5">
+                  <p className="flex items-center gap-2 text-sm font-bold text-navy">
+                    <Building2 className="h-4 w-4 text-brand" aria-hidden="true" /> Bank Transfer
+                    Details
+                  </p>
+                  <dl className="mt-4 space-y-3">
+                    {BANK_DETAILS.map((detail) => (
+                      <div
+                        key={detail.label}
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-tint px-4 py-3"
+                      >
+                        <div className="min-w-0">
+                          <dt className="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                            {detail.label}
+                          </dt>
+                          <dd className="select-all break-all text-sm font-extrabold text-navy">
+                            {detail.value}
+                          </dd>
+                        </div>
+                        {detail.copy ? (
+                          <CopyButton value={detail.value} label={detail.label} />
+                        ) : null}
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    Your registration will be confirmed after The Diabetes Centre verifies your
+                    payment.
+                  </p>
                 </div>
 
                 <div data-invalid={errors['paymentProof'] ? "true" : undefined}>
@@ -305,7 +413,8 @@ function CheckoutPage() {
                     Upload Payment Screenshot <span className="text-destructive">*</span>
                   </label>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    JPG, JPEG, PNG or PDF — maximum 5 MB.
+                    Please upload a clear screenshot or receipt of your successful bank transfer so
+                    our team can verify your registration. JPG, JPEG, PNG or PDF — maximum 5 MB.
                   </p>
                   <input
                     id="paymentProof"
@@ -319,7 +428,7 @@ function CheckoutPage() {
                   />
                   {file && !errors['paymentProof'] ? (
                     <p className="mt-2 flex items-center gap-2 text-sm font-medium text-brand">
-                      <BadgeCheck className="h-4 w-4" aria-hidden="true" /> {file.name} attached
+                      <FileUp className="h-4 w-4" aria-hidden="true" /> {file.name} attached
                     </p>
                   ) : null}
                   {errors['paymentProof'] ? (
@@ -371,12 +480,21 @@ function CheckoutPage() {
                   Diabetes Control Masterclass
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Live online masterclass by The Diabetes Centre Pakistan.
+                  {EVENT_DATE} · {EVENT_TIME}
                 </p>
                 <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
                   <span className="text-sm font-semibold text-navy">Registration fee</span>
-                  <span className="text-3xl font-extrabold text-brand">PKR 499</span>
+                  <span className="text-3xl font-extrabold text-brand">{EVENT_FEE}</span>
                 </div>
+              </div>
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
+                <p className="font-semibold text-navy">Need Help With Registration?</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Our team is one message away.
+                </p>
+                <WhatsAppButton size="md" className="mt-4 w-full">
+                  Chat With Us on WhatsApp
+                </WhatsAppButton>
               </div>
               <div className="rounded-3xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-card">
                 <p className="font-semibold text-navy">Educational programme</p>
@@ -389,6 +507,7 @@ function CheckoutPage() {
           </div>
         </div>
       </main>
+      <FloatingWhatsApp />
       <SiteFooter />
     </div>
   );
