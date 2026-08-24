@@ -43,6 +43,14 @@ import {
   TdcLogo,
   UrduLine,
 } from "@/components/tdc/brand";
+import {
+  Countdown,
+  EVENT_DATE,
+  EVENT_FEE,
+  EVENT_TIME,
+  FloatingWhatsApp,
+  WhatsAppButton,
+} from "@/components/tdc/event";
 import { SiteFooter, SiteHeader, StickyMobileCta } from "@/components/tdc/site";
 
 export const Route = createFileRoute("/")({
