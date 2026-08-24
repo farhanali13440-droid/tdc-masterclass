@@ -9,6 +9,7 @@ import {
   Activity,
   Apple,
   Brain,
+  CalendarDays,
   Check,
   Clock3,
   Croissant,
@@ -43,6 +44,14 @@ import {
   TdcLogo,
   UrduLine,
 } from "@/components/tdc/brand";
+import {
+  Countdown,
+  EVENT_DATE,
+  EVENT_FEE,
+  EVENT_TIME,
+  FloatingWhatsApp,
+  WhatsAppButton,
+} from "@/components/tdc/event";
 import { SiteFooter, SiteHeader, StickyMobileCta } from "@/components/tdc/site";
 
 export const Route = createFileRoute("/")({
@@ -95,11 +104,12 @@ export const Route = createFileRoute("/")({
 });
 
 const eventDetails = [
+  { icon: CalendarDays, label: "Date", value: EVENT_DATE },
+  { icon: Clock3, label: "Time", value: EVENT_TIME },
   { icon: MonitorPlay, label: "Format", value: "Live Masterclass" },
   { icon: Globe, label: "Platform", value: "Online" },
-  { icon: Clock3, label: "Duration", value: "To be announced" },
   { icon: Stethoscope, label: "Hosted by", value: "The Diabetes Centre Pakistan" },
-  { icon: Wallet, label: "Registration Fee", value: "PKR 499" },
+  { icon: Wallet, label: "Registration Fee", value: EVENT_FEE },
 ];
 
 const painPoints = [
@@ -289,7 +299,7 @@ const faqs = [
   },
   {
     q: "How do I register?",
-    a: "Fill in your registration details, pay the registration fee through Easypaisa, upload your payment screenshot and submit the registration form. TDC will verify the payment and provide the next instructions.",
+    a: "Fill in your registration details, transfer PKR 499 to the Dubai Islamic Bank account shown on the checkout page, upload your payment screenshot and submit the registration form. TDC will verify the payment and provide the next instructions.",
   },
 ];
 
@@ -311,8 +321,19 @@ function SalesPage() {
                 blood sugar — and discover practical strategies to take control of your health.
               </p>
               <UrduLine>اپنی صحت کو سمجھیے، اپنی زندگی کو بہتر بنائیے۔</UrduLine>
+              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-bold text-navy">
+                <span className="inline-flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_DATE}
+                </span>
+                <span aria-hidden="true" className="text-brand/50">|</span>
+                <span className="inline-flex items-center gap-2">
+                  <Clock3 className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_TIME}
+                </span>
+              </p>
+              <Countdown />
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <CtaButton event="hero">JOIN THE MASTERCLASS — PKR 499</CtaButton>
+                <WhatsAppButton>Ask a Question on WhatsApp</WhatsAppButton>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-2">
                 <TdcLogo />
@@ -363,13 +384,18 @@ function SalesPage() {
                   ))}
                 </dl>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Date, time and duration will be confirmed by The Diabetes Centre Pakistan.
+                  Pakistan Standard Time (PKT / UTC+5). Joining details are shared by The Diabetes
+                  Centre Pakistan after payment verification.
                 </p>
               </div>
-              <div className="lg:w-64">
+              <div className="flex flex-col gap-4 lg:w-72">
+                <Countdown size="sm" className="rounded-2xl bg-background p-4 ring-1 ring-border" />
                 <CtaButton event="details" className="w-full">
                   Reserve My Seat — PKR 499
                 </CtaButton>
+                <WhatsAppButton size="md" className="w-full">
+                  Ask a Question on WhatsApp
+                </WhatsAppButton>
               </div>
             </div>
           </div>
@@ -830,6 +856,11 @@ function SalesPage() {
                 </span>
                 <span className="text-sm font-bold text-brand">PKR 499</span>
               </div>
+              <Countdown
+                size="sm"
+                heading="Registration closes when the masterclass starts in"
+                className="mx-auto"
+              />
               <CtaButton event="offer" className="w-full">
                 JOIN THE MASTERCLASS FOR PKR 499
               </CtaButton>
@@ -839,6 +870,7 @@ function SalesPage() {
             </div>
           </div>
         </Section>
+
 
         {/* FAQ */}
         <Section id="faq">
@@ -855,6 +887,15 @@ function SalesPage() {
               </AccordionItem>
             ))}
           </Accordion>
+          <div className="mx-auto mt-10 max-w-3xl rounded-3xl border border-border bg-tint p-6 text-center">
+            <h3 className="text-xl font-extrabold text-navy">Still Have Questions?</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Chat with our team on WhatsApp — we'll help you register.
+            </p>
+            <WhatsAppButton size="md" className="mt-4">
+              Chat With Us on WhatsApp
+            </WhatsAppButton>
+          </div>
         </Section>
 
         {/* FINAL CTA */}
@@ -870,13 +911,21 @@ function SalesPage() {
               Your health deserves more than guesswork. Start by understanding diabetes, food,
               blood sugar and lifestyle.
             </p>
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-navy-foreground/90">
+              {EVENT_DATE} · {EVENT_TIME}
+            </p>
+            <Countdown variant="inverse" size="sm" className="mx-auto" />
             <CtaButton event="final" variant="light">
-              JOIN DIABETES CONTROL MASTERCLASS — PKR 499
+              JOIN DIABETES CONTROL MASTERCLASS — {EVENT_FEE}
             </CtaButton>
+            <WhatsAppButton variant="light" size="md">
+              Have Questions? Chat With Us on WhatsApp
+            </WhatsAppButton>
           </div>
         </Section>
       </main>
       <StickyMobileCta />
+      <FloatingWhatsApp />
       <SiteFooter />
     </div>
   );

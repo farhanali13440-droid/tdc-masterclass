@@ -1,8 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle2, Clock, GraduationCap, Upload } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock, Clock3, GraduationCap, Upload } from "lucide-react";
 import { useEffect } from "react";
 
 import { CtaButton, Eyebrow, TdcLogo } from "@/components/tdc/brand";
+import {
+  Countdown,
+  EVENT_DATE,
+  EVENT_TIME,
+  FloatingWhatsApp,
+  WHATSAPP_NUMBER,
+  WhatsAppButton,
+} from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 
 export const Route = createFileRoute("/thank-you")({
@@ -64,6 +72,9 @@ function ThankYouPage() {
       <main className="flex-1">
         <section className="bg-brand-gradient px-5 py-16 text-navy-foreground sm:px-8 sm:py-24">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+            <div className="rounded-3xl bg-background/95 px-6 py-4">
+              <TdcLogo />
+            </div>
             <span className="grid h-16 w-16 place-items-center rounded-full bg-navy-foreground/15 ring-1 ring-navy-foreground/25">
               <CheckCircle2 className="h-9 w-9" aria-hidden="true" />
             </span>
@@ -75,6 +86,15 @@ function ThankYouPage() {
               Thank you for registering for the Diabetes Control Masterclass by The Diabetes
               Centre Pakistan.
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-2xl bg-navy-foreground/12 px-6 py-4 text-sm font-bold ring-1 ring-navy-foreground/20">
+              <span className="inline-flex items-center gap-2">
+                <CalendarDays className="h-4 w-4" aria-hidden="true" /> {EVENT_DATE}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Clock3 className="h-4 w-4" aria-hidden="true" /> {EVENT_TIME}
+              </span>
+            </div>
+            <Countdown variant="inverse" size="sm" className="mx-auto" />
             <p lang="ur" className="urdu text-lg text-navy-foreground/90">
               آپ نے پہلا قدم اٹھا لیا ہے۔
             </p>
@@ -118,10 +138,13 @@ function ThankYouPage() {
             <div className="mt-10 rounded-3xl border border-border bg-tint p-6">
               <TdcLogo />
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Need help with your registration? Reply on the same WhatsApp number you used for
-                the Easypaisa payment confirmation:{" "}
-                <strong className="text-navy">0313 5944817</strong>.
+                Please watch for further masterclass instructions from The Diabetes Centre
+                Pakistan on WhatsApp and email. Need help with your registration? Message us on{" "}
+                <strong className="text-navy">{WHATSAPP_NUMBER}</strong>.
               </p>
+              <WhatsAppButton size="md" className="mt-4">
+                Chat With Us on WhatsApp
+              </WhatsAppButton>
             </div>
 
             <div className="mt-10 flex justify-center">
@@ -132,6 +155,7 @@ function ThankYouPage() {
           </div>
         </section>
       </main>
+      <FloatingWhatsApp />
       <SiteFooter />
     </div>
   );
