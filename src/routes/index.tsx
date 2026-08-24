@@ -103,11 +103,12 @@ export const Route = createFileRoute("/")({
 });
 
 const eventDetails = [
+  { icon: CalendarDays, label: "Date", value: EVENT_DATE },
+  { icon: Clock3, label: "Time", value: EVENT_TIME },
   { icon: MonitorPlay, label: "Format", value: "Live Masterclass" },
   { icon: Globe, label: "Platform", value: "Online" },
-  { icon: Clock3, label: "Duration", value: "To be announced" },
   { icon: Stethoscope, label: "Hosted by", value: "The Diabetes Centre Pakistan" },
-  { icon: Wallet, label: "Registration Fee", value: "PKR 499" },
+  { icon: Wallet, label: "Registration Fee", value: EVENT_FEE },
 ];
 
 const painPoints = [
