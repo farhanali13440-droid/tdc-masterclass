@@ -299,7 +299,7 @@ const faqs = [
   },
   {
     q: "How do I register?",
-    a: "Fill in your registration details, pay the registration fee through Easypaisa, upload your payment screenshot and submit the registration form. TDC will verify the payment and provide the next instructions.",
+    a: "Fill in your registration details, transfer PKR 499 to the Dubai Islamic Bank account shown on the checkout page, upload your payment screenshot and submit the registration form. TDC will verify the payment and provide the next instructions.",
   },
 ];
 
