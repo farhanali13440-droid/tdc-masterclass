@@ -388,10 +388,14 @@ function SalesPage() {
                   Centre Pakistan after payment verification.
                 </p>
               </div>
-              <div className="lg:w-64">
+              <div className="flex flex-col gap-4 lg:w-72">
+                <Countdown size="sm" className="rounded-2xl bg-background p-4 ring-1 ring-border" />
                 <CtaButton event="details" className="w-full">
                   Reserve My Seat — PKR 499
                 </CtaButton>
+                <WhatsAppButton size="md" className="w-full">
+                  Ask a Question on WhatsApp
+                </WhatsAppButton>
               </div>
             </div>
           </div>
