@@ -9,6 +9,7 @@ import {
   Activity,
   Apple,
   Brain,
+  CalendarDays,
   Check,
   Clock3,
   Croissant,
