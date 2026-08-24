@@ -321,8 +321,19 @@ function SalesPage() {
                 blood sugar — and discover practical strategies to take control of your health.
               </p>
               <UrduLine>اپنی صحت کو سمجھیے، اپنی زندگی کو بہتر بنائیے۔</UrduLine>
+              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-bold text-navy">
+                <span className="inline-flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_DATE}
+                </span>
+                <span aria-hidden="true" className="text-brand/50">|</span>
+                <span className="inline-flex items-center gap-2">
+                  <Clock3 className="h-4 w-4 text-brand" aria-hidden="true" /> {EVENT_TIME}
+                </span>
+              </p>
+              <Countdown />
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <CtaButton event="hero">JOIN THE MASTERCLASS — PKR 499</CtaButton>
+                <WhatsAppButton>Ask a Question on WhatsApp</WhatsAppButton>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-2">
                 <TdcLogo />
