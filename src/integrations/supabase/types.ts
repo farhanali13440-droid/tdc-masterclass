@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      masterclass_registrations: {
+        Row: {
+          age: number | null
+          amount_pkr: number
+          city: string
+          created_at: string
+          diabetes_type: string | null
+          email: string
+          full_name: string
+          has_diabetes: string | null
+          id: string
+          payment_proof_path: string
+          status: string
+          whatsapp: string
+        }
+        Insert: {
+          age?: number | null
+          amount_pkr?: number
+          city: string
+          created_at?: string
+          diabetes_type?: string | null
+          email: string
+          full_name: string
+          has_diabetes?: string | null
+          id?: string
+          payment_proof_path: string
+          status?: string
+          whatsapp: string
+        }
+        Update: {
+          age?: number | null
+          amount_pkr?: number
+          city?: string
+          created_at?: string
+          diabetes_type?: string | null
+          email?: string
+          full_name?: string
+          has_diabetes?: string | null
+          id?: string
+          payment_proof_path?: string
+          status?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
