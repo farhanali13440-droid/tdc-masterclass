@@ -155,6 +155,7 @@ function ThankYouPage() {
           </div>
         </section>
       </main>
+      <FloatingWhatsApp />
       <SiteFooter />
     </div>
   );
