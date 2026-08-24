@@ -856,6 +856,11 @@ function SalesPage() {
                 </span>
                 <span className="text-sm font-bold text-brand">PKR 499</span>
               </div>
+              <Countdown
+                size="sm"
+                heading="Registration closes when the masterclass starts in"
+                className="mx-auto"
+              />
               <CtaButton event="offer" className="w-full">
                 JOIN THE MASTERCLASS FOR PKR 499
               </CtaButton>
@@ -865,6 +870,7 @@ function SalesPage() {
             </div>
           </div>
         </Section>
+
 
         {/* FAQ */}
         <Section id="faq">
