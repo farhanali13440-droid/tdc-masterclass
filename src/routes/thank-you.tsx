@@ -1,8 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle2, Clock, GraduationCap, Upload } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock, Clock3, GraduationCap, Upload } from "lucide-react";
 import { useEffect } from "react";
 
 import { CtaButton, Eyebrow, TdcLogo } from "@/components/tdc/brand";
+import {
+  Countdown,
+  EVENT_DATE,
+  EVENT_TIME,
+  FloatingWhatsApp,
+  WHATSAPP_NUMBER,
+  WhatsAppButton,
+} from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 
 export const Route = createFileRoute("/thank-you")({
