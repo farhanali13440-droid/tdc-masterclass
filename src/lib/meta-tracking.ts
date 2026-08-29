@@ -143,6 +143,8 @@ export async function trackMetaConversion(
 
   const dedupeKey = options.dedupeKey;
   if (dedupeKey && hasSentEvent(dedupeKey)) return { sent: false };
+  const sessionKey = options.sessionKey;
+  if (sessionKey && hasSentSessionEvent(sessionKey)) return { sent: false };
 
   // With a dedupe key the id is deterministic, so even a different browser or
   // cleared storage cannot produce a second countable conversion in Meta.
