@@ -9,6 +9,8 @@
 import { trackMetaEvent } from "./meta.functions";
 
 export type MetaEventName =
+  | "ViewContent"
+  | "InitiateCheckout"
   | "Lead"
   | "Contact"
   | "SubmitApplication"
