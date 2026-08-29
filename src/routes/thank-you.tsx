@@ -69,9 +69,54 @@ const steps = [
 ];
 
 function ThankYouPage() {
+  const { rid } = Route.useSearch();
+
   useEffect(() => {
     document.dispatchEvent(new CustomEvent("tdc:thank-you-view"));
   }, []);
+
+  useEffect(() => {
+    const pending = readPendingRegistration();
+    const registrationId = rid ?? pending?.id;
+    if (!registrationId) return;
+
+    const customer = {
+      ...(pending?.email ? { email: pending.email } : {}),
+      ...(pending?.phone ? { phone: pending.phone } : {}),
+      ...(pending?.firstName ? { firstName: pending.firstName } : {}),
+      ...(pending?.lastName ? { lastName: pending.lastName } : {}),
+      ...(pending?.city ? { city: pending.city } : {}),
+      externalId: registrationId,
+    };
+
+    void (async () => {
+      // Registration completed — idempotent per registration id, so a refresh
+      // never produces a second conversion.
+      await trackMetaConversion("CompleteRegistration", {
+        dedupeKey: `completeregistration:${registrationId}`,
+        eventIdSuffix: registrationId.slice(0, 8),
+        registrationId,
+        customer,
+      });
+
+      // Purchase ONLY when the server confirms the payment has been verified.
+      try {
+        const { confirmed } = await getRegistrationConfirmation({ data: { registrationId } });
+        if (!confirmed) return;
+        await trackMetaConversion("Purchase", {
+          dedupeKey: `purchase:${registrationId}`,
+          eventIdSuffix: registrationId.slice(0, 8),
+          registrationId,
+          value: 499,
+          currency: "PKR",
+          customer,
+        });
+      } catch {
+        /* tracking must never break the confirmation page */
+      }
+    })();
+  }, [rid]);
+
 
   return (
     <div id="thank-you-page" className="flex min-h-screen flex-col">
