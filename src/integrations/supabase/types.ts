@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           age: number | null
           amount_pkr: number
+          checkout_token: string | null
           city: string
           created_at: string
           diabetes_type: string | null
@@ -26,12 +27,17 @@ export type Database = {
           has_diabetes: string | null
           id: string
           payment_proof_path: string
+          payment_status: string
+          payment_submitted_at: string | null
+          registration_status: string
+          lead_status: string
           status: string
           whatsapp: string
         }
         Insert: {
           age?: number | null
           amount_pkr?: number
+          checkout_token?: string | null
           city: string
           created_at?: string
           diabetes_type?: string | null
@@ -40,12 +46,17 @@ export type Database = {
           has_diabetes?: string | null
           id?: string
           payment_proof_path: string
+          payment_status?: string
+          payment_submitted_at?: string | null
+          registration_status?: string
+          lead_status?: string
           status?: string
           whatsapp: string
         }
         Update: {
           age?: number | null
           amount_pkr?: number
+          checkout_token?: string | null
           city?: string
           created_at?: string
           diabetes_type?: string | null
@@ -54,6 +65,10 @@ export type Database = {
           has_diabetes?: string | null
           id?: string
           payment_proof_path?: string
+          payment_status?: string
+          payment_submitted_at?: string | null
+          registration_status?: string
+          lead_status?: string
           status?: string
           whatsapp?: string
         }
