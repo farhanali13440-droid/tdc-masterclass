@@ -12,8 +12,14 @@ import {
   WhatsAppButton,
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
+import { getRegistrationConfirmation } from "@/lib/meta.functions";
+import { readPendingRegistration, trackMetaConversion } from "@/lib/meta-tracking";
 
 export const Route = createFileRoute("/thank-you")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    rid: typeof search['rid'] === "string" ? (search['rid'] as string) : undefined,
+  }),
+
   head: () => ({
     meta: [
       { title: "You're Registered | Diabetes Control Masterclass — TDC Pakistan" },
