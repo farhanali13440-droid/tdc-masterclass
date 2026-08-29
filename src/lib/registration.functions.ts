@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const leadSchema = z.object({
   fullName: z.string().trim().min(2).max(100),
@@ -78,14 +79,10 @@ export const submitPaymentProof = createServerFn({ method: "POST" })
   });
 
 export const listAdminRegistrations = createServerFn({ method: "POST" })
-  .middleware([])
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ query: z.string().max(100).optional() }).parse(input))
-  .handler(async ({ data }) => {
-    // Authentication is checked in the route before this function is called; role
-    // enforcement is repeated here from the bearer token's claims when present.
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const request = getRequest();
-    if (!request.headers.get("authorization")) throw new Error("Unauthorized");
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin.from("masterclass_registrations")
       .select("id, full_name, whatsapp, email, city, age, has_diabetes, diabetes_type, lead_status, payment_status, registration_status, created_at, payment_submitted_at, payment_proof_path")
