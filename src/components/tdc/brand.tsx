@@ -76,6 +76,7 @@ export function CtaButton({
   return (
     <Link
       to="/checkout"
+      onClick={trackInitiateCheckout}
       data-cta={event}
       id={`cta-${event}`}
       className={cn(
