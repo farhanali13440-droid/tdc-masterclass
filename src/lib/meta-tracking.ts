@@ -169,6 +169,7 @@ export async function trackMetaConversion(
 
   // Mark before awaiting so a fast refresh can't double-fire.
   if (dedupeKey) markEventSent(dedupeKey, eventId);
+  if (sessionKey) markSessionEventSent(sessionKey, eventId);
 
   try {
     await trackMetaEvent({
