@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import { CtaButton, TdcLogo } from "./brand";
+import { CtaButton, TdcLogo, trackInitiateCheckout } from "./brand";
 
 export function SiteHeader() {
   return (
