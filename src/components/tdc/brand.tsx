@@ -4,6 +4,16 @@ import type { ReactNode } from "react";
 
 import logo from "@/assets/tdc-logo.png";
 import { cn } from "@/lib/utils";
+import { trackMetaConversion } from "@/lib/meta-tracking";
+
+/** Intentional click on a "register / join" CTA = the visitor starts checkout. */
+export function trackInitiateCheckout(): void {
+  void trackMetaConversion("InitiateCheckout", {
+    sessionKey: "initiatecheckout",
+    value: 499,
+    currency: "PKR",
+  });
+}
 
 export const MASTERCLASS_PRICE = "PKR 499";
 export const PRIMARY_CTA = "Join the Diabetes Control Masterclass — PKR 499";
@@ -66,6 +76,7 @@ export function CtaButton({
   return (
     <Link
       to="/checkout"
+      onClick={trackInitiateCheckout}
       data-cta={event}
       id={`cta-${event}`}
       className={cn(

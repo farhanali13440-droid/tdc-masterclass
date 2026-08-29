@@ -156,6 +156,13 @@ function CheckoutPage() {
     if (!started.current) {
       started.current = true;
       document.dispatchEvent(new CustomEvent("tdc:registration-start"));
+      // Direct visitors who never clicked a CTA: first real form interaction is
+      // the checkout start. Session-deduped, so it can't fire twice.
+      void trackMetaConversion("InitiateCheckout", {
+        sessionKey: "initiatecheckout",
+        value: 499,
+        currency: "PKR",
+      });
     }
   };
 

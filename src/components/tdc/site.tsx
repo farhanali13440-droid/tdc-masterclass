@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import { CtaButton, TdcLogo } from "./brand";
+import { CtaButton, TdcLogo, trackInitiateCheckout } from "./brand";
 
 export function SiteHeader() {
   return (
@@ -52,7 +52,9 @@ export function SiteFooter() {
           <TdcLogo />
           <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-navy">
             <Link to="/">Masterclass</Link>
-            <Link to="/checkout">Register</Link>
+            <Link to="/checkout" onClick={trackInitiateCheckout}>
+              Register
+            </Link>
           </nav>
         </div>
         <p className="max-w-4xl text-xs leading-relaxed text-muted-foreground">
