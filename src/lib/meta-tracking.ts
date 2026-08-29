@@ -121,7 +121,12 @@ export async function trackMetaConversion(
   const dedupeKey = options.dedupeKey;
   if (dedupeKey && hasSentEvent(dedupeKey)) return { sent: false };
 
-  const eventId = createEventId(eventName, options.eventIdSuffix);
+  // With a dedupe key the id is deterministic, so even a different browser or
+  // cleared storage cannot produce a second countable conversion in Meta.
+  const eventId = options.registrationId
+    ? `${eventName.toLowerCase()}_${options.registrationId}`
+    : createEventId(eventName, options.eventIdSuffix);
+
   const eventTime = Math.floor(Date.now() / 1000);
   const eventSourceUrl = window.location.href;
 
