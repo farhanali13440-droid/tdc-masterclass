@@ -95,9 +95,14 @@ export const listAdminRegistrations = createServerFn({ method: "POST" })
     const { data: rows, error } = await query;
     if (error) throw new Error("Unable to load registrations.");
     const result = await Promise.all((rows ?? []).map(async (row) => {
-      if (!row.payment_proof_path) return { ...row, proofUrl: null };
+      // Legacy registrations may have a screenshot without their status column
+      // being updated. A submitted proof is the authoritative payment signal.
+      const hasProof = Boolean(row.payment_proof_path?.trim());
+      const payment_status = hasProof ? "Payment Submitted" : (row.payment_status || "Payment Pending");
+      const normalized = { ...row, payment_status };
+      if (!hasProof) return { ...normalized, proofUrl: null };
       const { data: signed } = await supabaseAdmin.storage.from("payment-proofs").createSignedUrl(row.payment_proof_path, 60);
-      return { ...row, proofUrl: signed?.signedUrl ?? null };
+      return { ...normalized, proofUrl: signed?.signedUrl ?? null };
     }));
     return result;
   });
