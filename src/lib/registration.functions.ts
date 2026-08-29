@@ -85,7 +85,7 @@ export const listAdminRegistrations = createServerFn({ method: "POST" })
     await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin.from("masterclass_registrations")
-      .select("id, full_name, whatsapp, email, city, age, has_diabetes, diabetes_type, lead_status, payment_status, registration_status, created_at, payment_submitted_at, payment_proof_path")
+      .select("id, full_name, whatsapp, email, city, age, has_diabetes, diabetes_type, lead_status, payment_status, registration_status, created_at, payment_submitted_at, payment_proof_path, amount_pkr")
       .order("created_at", { ascending: false })
       .limit(500);
     if (data.query?.trim()) {
