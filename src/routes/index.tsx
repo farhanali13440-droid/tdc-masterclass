@@ -304,6 +304,16 @@ const faqs = [
 ];
 
 function SalesPage() {
+  // ViewContent: fired once per browsing session on the masterclass content page,
+  // never repeated by React re-renders.
+  useEffect(() => {
+    void trackMetaConversion("ViewContent", {
+      sessionKey: "viewcontent:masterclass",
+      value: 499,
+      currency: "PKR",
+    });
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
