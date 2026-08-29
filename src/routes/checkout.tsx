@@ -25,6 +25,12 @@ import {
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  splitName,
+  storePendingRegistration,
+  trackMetaConversion,
+} from "@/lib/meta-tracking";
+
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
