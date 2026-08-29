@@ -99,9 +99,30 @@ export function markEventSent(key: string, eventId: string): void {
   }
 }
 
+/** Session-scoped guard: one send per browsing session (page-view style events). */
+export function hasSentSessionEvent(key: string): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return window.sessionStorage.getItem(DEDUPE_PREFIX + key) !== null;
+  } catch {
+    return false;
+  }
+}
+
+export function markSessionEventSent(key: string, eventId: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(DEDUPE_PREFIX + key, eventId);
+  } catch {
+    /* storage unavailable — ignore */
+  }
+}
+
 export type TrackOptions = {
   /** Idempotency key, e.g. `purchase:<registrationId>`. Prevents repeat sends. */
   dedupeKey?: string;
+  /** Session-scoped idempotency key (sessionStorage) for ViewContent-style events. */
+  sessionKey?: string;
   /** Suffix used inside the generated event id (usually the registration id). */
   eventIdSuffix?: string;
   registrationId?: string;
