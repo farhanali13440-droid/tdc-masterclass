@@ -4,6 +4,8 @@ import { z } from "zod";
 
 const eventSchema = z.object({
   eventName: z.enum([
+    "ViewContent",
+    "InitiateCheckout",
     "Lead",
     "Contact",
     "SubmitApplication",
