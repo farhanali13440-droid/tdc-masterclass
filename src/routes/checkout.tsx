@@ -25,6 +25,12 @@ import {
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  splitName,
+  storePendingRegistration,
+  trackMetaConversion,
+} from "@/lib/meta-tracking";
+
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -208,17 +214,37 @@ function CheckoutPage() {
     }
 
     setSubmitting(true);
+    const registrationId = crypto.randomUUID();
+    const { firstName, lastName } = splitName(parsed.data.fullName);
+    const customer = {
+      email: parsed.data.email,
+      phone: parsed.data.whatsapp,
+      firstName,
+      lastName,
+      city: parsed.data.city,
+      externalId: registrationId,
+    };
+
     try {
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-      const path = `${crypto.randomUUID()}.${extension}`;
+      const path = `${registrationId}.${extension}`;
       const { error: uploadError } = await supabase.storage
         .from("payment-proofs")
         .upload(path, file, { contentType: file.type, upsert: false });
       if (uploadError) throw uploadError;
 
+      // Payment proof successfully stored → AddPaymentInfo.
+      void trackMetaConversion("AddPaymentInfo", {
+        dedupeKey: `addpaymentinfo:${registrationId}`,
+        eventIdSuffix: registrationId.slice(0, 8),
+        registrationId,
+        customer,
+      });
+
       const { error: insertError } = await supabase
         .from("masterclass_registrations")
         .insert({
+          id: registrationId,
           full_name: parsed.data.fullName,
           whatsapp: parsed.data.whatsapp,
           email: parsed.data.email,
@@ -231,8 +257,33 @@ function CheckoutPage() {
         });
       if (insertError) throw insertError;
 
+      // Registration/application submitted successfully.
+      void trackMetaConversion("SubmitApplication", {
+        dedupeKey: `submitapplication:${registrationId}`,
+        eventIdSuffix: registrationId.slice(0, 8),
+        registrationId,
+        customer,
+      });
+      // Contact details captured successfully → Lead.
+      void trackMetaConversion("Lead", {
+        dedupeKey: `lead:${registrationId}`,
+        eventIdSuffix: registrationId.slice(0, 8),
+        registrationId,
+        customer,
+      });
+
+      storePendingRegistration({
+        id: registrationId,
+        email: parsed.data.email,
+        phone: parsed.data.whatsapp,
+        firstName,
+        lastName,
+        city: parsed.data.city,
+      });
+
       document.dispatchEvent(new CustomEvent("tdc:registration-submitted"));
-      await navigate({ to: "/thank-you" });
+      await navigate({ to: "/thank-you", search: { rid: registrationId } });
+
     } catch (error) {
       console.error(error);
       setFormError(

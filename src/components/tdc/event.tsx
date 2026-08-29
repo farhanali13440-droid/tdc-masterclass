@@ -2,6 +2,13 @@ import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { trackMetaConversion } from "@/lib/meta-tracking";
+
+/** Fired only on an intentional contact action (click), never on render. */
+export function trackContactClick(): void {
+  void trackMetaConversion("Contact");
+}
+
 
 export const EVENT_DATE = "6 September 2026";
 export const EVENT_TIME = "8:00 PM – 10:00 PM PKT";
@@ -144,6 +151,7 @@ export function WhatsAppButton({
       href={WHATSAPP_LINK}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={trackContactClick}
       className={cn(
         "inline-flex max-w-full items-center justify-center gap-2 rounded-full text-center font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         size === "lg" ? "min-h-13 px-6 py-4 text-sm sm:text-base" : "min-h-11 px-5 py-3 text-sm",
@@ -167,6 +175,7 @@ export function FloatingWhatsApp() {
       href={WHATSAPP_LINK}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={trackContactClick}
       aria-label="Chat with The Diabetes Centre Pakistan on WhatsApp"
       className="fixed right-4 bottom-24 z-40 grid h-12 w-12 place-items-center rounded-full bg-brand-gradient text-primary-foreground shadow-float transition-transform hover:scale-105 sm:bottom-6 sm:h-14 sm:w-14"
     >
