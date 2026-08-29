@@ -7,24 +7,26 @@ let pixelInitPromise: Promise<string | null> | null = null;
 
 function injectPixelBase(): void {
   if (typeof window === "undefined" || window.fbq) return;
-  const fbq: typeof window.fbq & { queue?: unknown[] } = function (...args: unknown[]) {
-    const self = window.fbq as unknown as {
+
+  const stub = function (...args: unknown[]) {
+    const self = stub as unknown as {
       callMethod?: (...a: unknown[]) => void;
       queue: unknown[];
     };
     if (self.callMethod) self.callMethod(...args);
     else self.queue.push(args);
-  } as unknown as typeof window.fbq;
+  };
+  Object.assign(stub, { push: stub, loaded: true, version: "2.0", queue: [] as unknown[] });
 
-  window.fbq = fbq;
-  window._fbq = fbq;
-  Object.assign(window.fbq as object, { push: window.fbq, loaded: true, version: "2.0", queue: [] });
+  window.fbq = stub as unknown as NonNullable<Window["fbq"]>;
+  window._fbq = window.fbq;
 
   const script = document.createElement("script");
   script.async = true;
   script.src = "https://connect.facebook.net/en_US/fbevents.js";
   document.head.appendChild(script);
 }
+
 
 async function ensurePixel(): Promise<string | null> {
   if (!pixelInitPromise) {
