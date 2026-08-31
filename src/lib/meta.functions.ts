@@ -44,8 +44,7 @@ export const trackMetaEvent = createServerFn({ method: "POST" })
     try {
       const { sendMetaCapiEvent, getRegistrationPaymentState } = await import("./meta.server");
 
-      // Purchase is only ever reported for a registration whose payment the
-      // TDC team has actually verified in the database.
+      // Purchase is only ever reported for a real, submitted registration.
       if (data.eventName === "Purchase") {
         if (!data.registrationId) return { ok: false, skipped: "no-registration" as const };
         const state = await getRegistrationPaymentState(data.registrationId);
