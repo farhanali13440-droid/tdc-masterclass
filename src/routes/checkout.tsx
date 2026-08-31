@@ -13,10 +13,10 @@ export const Route = createFileRoute("/checkout")({ component: CheckoutPage });
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
 const BANK_DETAILS = [["Bank","Dubai Islamic Bank"],["Account Title","The diabetes center"],["Account Number","155380005"],["IBAN","PK76DUIB0000000155380005"]] as const;
-const schema = z.object({ fullName:z.string().trim().min(2,"Please enter your full name").max(100), whatsapp:z.string().trim().min(10,"Please enter a valid WhatsApp number").max(20).regex(/^[0-9+\-\s()]+$/,"Please enter a valid WhatsApp number"), email:z.string().trim().email("Please enter a valid email address").max(255), city:z.string().trim().min(2,"Please enter your city").max(80), age:z.string().trim().optional().refine((v)=>!v||(/^\d{1,3}$/.test(v)&&Number(v)>0&&Number(v)<120),{message:"Please enter a valid age"}), hasDiabetes:z.string().optional(), diabetesType:z.string().optional() });
-type FormValues={fullName:string;whatsapp:string;email:string;city:string;age:string;hasDiabetes:string;diabetesType:string};
+const schema = z.object({ fullName:z.string().trim().min(2,"Please enter your full name").max(100), whatsapp:z.string().trim().min(10,"Please enter a valid WhatsApp number").max(20).regex(/^[0-9+\-\s()]+$/,"Please enter a valid WhatsApp number"), email:z.string().trim().email("Please enter a valid email address").max(255), city:z.string().trim().min(2,"Please enter your city").max(80), learningGoal:z.string().trim().max(500).optional() });
+type FormValues={fullName:string;whatsapp:string;email:string;city:string;learningGoal:string};
 type Errors=Partial<Record<keyof FormValues|"paymentProof",string|undefined>>;
-const initial:FormValues={fullName:"",whatsapp:"",email:"",city:"",age:"",hasDiabetes:"",diabetesType:""};
+const initial:FormValues={fullName:"",whatsapp:"",email:"",city:"",learningGoal:""};
 
 function CheckoutPage(){
  const navigate=useNavigate(); const [step,setStep]=useState<1|2>(1); const [values,setValues]=useState(initial); const [errors,setErrors]=useState<Errors>({}); const [file,setFile]=useState<File|null>(null); const [registration,setRegistration]=useState<{id:string;token:string}|null>(null); const [submitting,setSubmitting]=useState(false); const [formError,setFormError]=useState<string|null>(null); const started=useRef(false);
