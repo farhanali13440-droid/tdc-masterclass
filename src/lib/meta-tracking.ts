@@ -61,6 +61,19 @@ export function getFbp(): string | undefined {
 }
 
 /**
+ * fbevents.js writes _fbp a tick after it loads. Waiting for it means the
+ * server event carries the same browser identifier as the pixel event, which
+ * is what Meta uses for match quality and deduplication.
+ */
+async function waitForFbp(maxMs = 1500): Promise<void> {
+  const started = Date.now();
+  while (!getFbp() && Date.now() - started < maxMs) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+}
+
+
+/**
  * Meta click id. Uses the existing _fbc cookie when present; otherwise builds
  * one from an fbclid in the URL (never overwriting a valid existing value).
  */
