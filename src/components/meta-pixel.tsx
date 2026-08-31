@@ -20,7 +20,7 @@ export function MetaPixel() {
     // pixel load so React re-renders can never produce a second id.
     const eventId = createEventId("PageView");
     let cancelled = false;
-    void ensurePixel().then((pixelId) => {
+    void ensureMetaPixel().then((pixelId) => {
       if (!pixelId || cancelled) return;
       window.fbq?.("track", "PageView", {}, { eventID: eventId });
     });
