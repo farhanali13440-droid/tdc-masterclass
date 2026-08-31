@@ -6,7 +6,9 @@
  * No access token ever exists in this file — CAPI calls go through the
  * `trackMetaEvent` server function.
  */
+import { ensureMetaPixel } from "./meta-pixel-loader";
 import { trackMetaEvent } from "./meta.functions";
+
 
 export type MetaEventName =
   | "PageView"
@@ -157,15 +159,20 @@ export async function trackMetaConversion(
     customData['currency'] = options.currency ?? "PKR";
   }
 
+  // Mark before awaiting so a fast refresh can't double-fire.
+  if (dedupeKey) markEventSent(dedupeKey, eventId);
+  if (sessionKey) markSessionEventSent(sessionKey, eventId);
+
+  // The pixel script loads asynchronously. Awaiting it here is what guarantees
+  // the BROWSER copy of the event actually reaches Meta (previously a fast
+  // submit could call window.fbq before it existed, leaving CAPI-only events).
   try {
+    await ensureMetaPixel();
     window.fbq?.("track", eventName, customData, { eventID: eventId });
   } catch (error) {
     console.warn("[meta-pixel] browser event failed", error);
   }
 
-  // Mark before awaiting so a fast refresh can't double-fire.
-  if (dedupeKey) markEventSent(dedupeKey, eventId);
-  if (sessionKey) markSessionEventSent(sessionKey, eventId);
 
   try {
     await trackMetaEvent({
