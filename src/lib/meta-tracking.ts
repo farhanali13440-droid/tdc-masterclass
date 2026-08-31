@@ -190,14 +190,6 @@ export async function trackMetaConversion(
   return { sent: true, eventId };
 }
 
-/** Splits a full name into first/last for Meta's fn/ln parameters. */
-export function splitName(fullName: string): { firstName?: string; lastName?: string } {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return {};
-  if (parts.length === 1) return { firstName: parts[0] as string };
-  return { firstName: parts[0] as string, lastName: parts.slice(1).join(" ") };
-}
-
 /** Stores the just-completed registration so the thank-you page can use it. */
 const PENDING_KEY = "tdc_last_registration";
 
