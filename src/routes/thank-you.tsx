@@ -79,15 +79,6 @@ function ThankYouPage() {
     const registrationId = rid ?? pending?.id;
     if (!registrationId) return;
 
-    const customer = {
-      ...(pending?.email ? { email: pending.email } : {}),
-      ...(pending?.phone ? { phone: pending.phone } : {}),
-      ...(pending?.firstName ? { firstName: pending.firstName } : {}),
-      ...(pending?.lastName ? { lastName: pending.lastName } : {}),
-      ...(pending?.city ? { city: pending.city } : {}),
-      externalId: registrationId,
-    };
-
     void (async () => {
       // Registration completed — idempotent per registration id, so a refresh
       // never produces a second conversion.
@@ -95,7 +86,6 @@ function ThankYouPage() {
         dedupeKey: `completeregistration:${registrationId}`,
         eventIdSuffix: registrationId.slice(0, 8),
         registrationId,
-        customer,
       });
 
       // Purchase is fired on the checkout page at successful submission.

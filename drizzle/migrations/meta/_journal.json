@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788182924885,
+      "tag": "0000_add_learning_goal_column",
+      "breakpoints": true
+    }
+  ]
+}

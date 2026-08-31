@@ -18,15 +18,11 @@ export type MetaEventName =
   | "CompleteRegistration"
   | "Purchase";
 
-export type MetaCustomerData = {
-  email?: string | undefined;
-  phone?: string | undefined;
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  city?: string | undefined;
-  externalId?: string | undefined;
-};
-
+/**
+ * Meta health-data compliance: this site is about a medical condition, so no
+ * personal identifiers (email, phone, name, city, external id) are ever sent
+ * to Meta. Only the Meta-owned browser identifiers (_fbp/_fbc) are forwarded.
+ */
 type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[]; loaded?: boolean };
 
 declare global {
@@ -128,7 +124,6 @@ export type TrackOptions = {
   registrationId?: string;
   value?: number;
   currency?: string;
-  customer?: MetaCustomerData;
 };
 
 /**
@@ -182,12 +177,6 @@ export async function trackMetaConversion(
         ...(options.value !== undefined ? { currency: options.currency ?? "PKR" } : {}),
         ...(options.registrationId ? { registrationId: options.registrationId } : {}),
         userData: {
-          ...(options.customer?.email ? { email: options.customer.email } : {}),
-          ...(options.customer?.phone ? { phone: options.customer.phone } : {}),
-          ...(options.customer?.firstName ? { firstName: options.customer.firstName } : {}),
-          ...(options.customer?.lastName ? { lastName: options.customer.lastName } : {}),
-          ...(options.customer?.city ? { city: options.customer.city } : {}),
-          ...(options.customer?.externalId ? { externalId: options.customer.externalId } : {}),
           ...(getFbp() ? { fbp: getFbp() } : {}),
           ...(getFbc() ? { fbc: getFbc() } : {}),
         },
@@ -201,24 +190,11 @@ export async function trackMetaConversion(
   return { sent: true, eventId };
 }
 
-/** Splits a full name into first/last for Meta's fn/ln parameters. */
-export function splitName(fullName: string): { firstName?: string; lastName?: string } {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return {};
-  if (parts.length === 1) return { firstName: parts[0] as string };
-  return { firstName: parts[0] as string, lastName: parts.slice(1).join(" ") };
-}
-
 /** Stores the just-completed registration so the thank-you page can use it. */
 const PENDING_KEY = "tdc_last_registration";
 
 export type PendingRegistration = {
   id: string;
-  email: string;
-  phone: string;
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  city?: string | undefined;
 };
 
 export function storePendingRegistration(value: PendingRegistration): void {

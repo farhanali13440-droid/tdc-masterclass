@@ -7,9 +7,7 @@ const leadSchema = z.object({
   whatsapp: z.string().trim().min(10).max(20).regex(/^[0-9+\-\s()]+$/),
   email: z.string().trim().email().max(255),
   city: z.string().trim().min(2).max(80),
-  age: z.number().int().positive().max(119).nullable(),
-  hasDiabetes: z.string().trim().max(40).nullable(),
-  diabetesType: z.string().trim().max(40).nullable(),
+  learningGoal: z.string().trim().max(500).nullable(),
 });
 
 async function requireAdmin(context: { claims?: Record<string, unknown> }) {
@@ -30,9 +28,7 @@ export const createCheckoutLead = createServerFn({ method: "POST" })
       whatsapp: data.whatsapp,
       email: data.email,
       city: data.city,
-      age: data.age,
-      has_diabetes: data.hasDiabetes,
-      diabetes_type: data.diabetesType,
+      learning_goal: data.learningGoal,
       amount_pkr: 499,
       payment_proof_path: "",
       status: "Opted In",
@@ -85,7 +81,7 @@ export const listAdminRegistrations = createServerFn({ method: "POST" })
     await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin.from("masterclass_registrations")
-      .select("id, full_name, whatsapp, email, city, age, has_diabetes, diabetes_type, lead_status, payment_status, registration_status, created_at, payment_submitted_at, payment_proof_path, amount_pkr")
+      .select("id, full_name, whatsapp, email, city, age, has_diabetes, diabetes_type, learning_goal, lead_status, payment_status, registration_status, created_at, payment_submitted_at, payment_proof_path, amount_pkr")
       .order("created_at", { ascending: false })
       .limit(500);
     if (data.query?.trim()) {
