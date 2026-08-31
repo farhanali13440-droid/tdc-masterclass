@@ -6,7 +6,9 @@
  * No access token ever exists in this file — CAPI calls go through the
  * `trackMetaEvent` server function.
  */
+import { ensureMetaPixel } from "./meta-pixel-loader";
 import { trackMetaEvent } from "./meta.functions";
+
 
 export type MetaEventName =
   | "PageView"
@@ -57,6 +59,19 @@ function readCookie(name: string): string | undefined {
 export function getFbp(): string | undefined {
   return readCookie("_fbp");
 }
+
+/**
+ * fbevents.js writes _fbp a tick after it loads. Waiting for it means the
+ * server event carries the same browser identifier as the pixel event, which
+ * is what Meta uses for match quality and deduplication.
+ */
+async function waitForFbp(maxMs = 1500): Promise<void> {
+  const started = Date.now();
+  while (!getFbp() && Date.now() - started < maxMs) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+}
+
 
 /**
  * Meta click id. Uses the existing _fbc cookie when present; otherwise builds
@@ -157,17 +172,23 @@ export async function trackMetaConversion(
     customData['currency'] = options.currency ?? "PKR";
   }
 
-  try {
-    window.fbq?.("track", eventName, customData, { eventID: eventId });
-  } catch (error) {
-    console.warn("[meta-pixel] browser event failed", error);
-  }
-
   // Mark before awaiting so a fast refresh can't double-fire.
   if (dedupeKey) markEventSent(dedupeKey, eventId);
   if (sessionKey) markSessionEventSent(sessionKey, eventId);
 
+  // The pixel script loads asynchronously. Awaiting it here is what guarantees
+  // the BROWSER copy of the event actually reaches Meta (previously a fast
+  // submit could call window.fbq before it existed, leaving CAPI-only events).
   try {
+    await ensureMetaPixel();
+    window.fbq?.("track", eventName, customData, { eventID: eventId });
+  } catch (error) {
+    console.warn("[meta-pixel] browser event failed", error);
+  }
+  await waitForFbp();
+
+  try {
+
     await trackMetaEvent({
       data: {
         eventName,
