@@ -7,9 +7,7 @@ const leadSchema = z.object({
   whatsapp: z.string().trim().min(10).max(20).regex(/^[0-9+\-\s()]+$/),
   email: z.string().trim().email().max(255),
   city: z.string().trim().min(2).max(80),
-  age: z.number().int().positive().max(119).nullable(),
-  hasDiabetes: z.string().trim().max(40).nullable(),
-  diabetesType: z.string().trim().max(40).nullable(),
+  learningGoal: z.string().trim().max(500).nullable(),
 });
 
 async function requireAdmin(context: { claims?: Record<string, unknown> }) {
