@@ -1,6 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
+import { createEventId } from "@/lib/meta-tracking";
 import { getMetaPixelId } from "@/lib/meta.functions";
 
 let pixelInitPromise: Promise<string | null> | null = null;
