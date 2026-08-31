@@ -49,7 +49,7 @@ export const trackMetaEvent = createServerFn({ method: "POST" })
       if (data.eventName === "Purchase") {
         if (!data.registrationId) return { ok: false, skipped: "no-registration" as const };
         const state = await getRegistrationPaymentState(data.registrationId);
-        if (!state.confirmed) return { ok: false, skipped: "payment-not-confirmed" as const };
+        if (!state.exists) return { ok: false, skipped: "registration-not-found" as const };
       }
 
       const result = await sendMetaCapiEvent(
