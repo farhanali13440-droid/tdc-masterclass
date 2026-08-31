@@ -14,8 +14,8 @@ const leadSchema = z.object({
 
 async function requireAdmin(context: { claims?: Record<string, unknown> }) {
   const claims = context.claims ?? {};
-  const appMetadata = (claims.app_metadata ?? {}) as Record<string, unknown>;
-  if (appMetadata.role !== "admin") throw new Error("Forbidden");
+  const appMetadata = (claims['app_metadata'] ?? {}) as Record<string, unknown>;
+  if (appMetadata['role'] !== "admin") throw new Error("Forbidden");
 }
 
 export const createCheckoutLead = createServerFn({ method: "POST" })
