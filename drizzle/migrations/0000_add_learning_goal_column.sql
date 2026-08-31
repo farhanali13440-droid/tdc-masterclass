@@ -1,0 +1,1 @@
+ALTER TABLE public.masterclass_registrations ADD COLUMN IF NOT EXISTS learning_goal text;

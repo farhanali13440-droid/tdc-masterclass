@@ -27,6 +27,7 @@ export type Database = {
           has_diabetes: string | null
           id: string
           lead_status: string
+          learning_goal: string | null
           payment_proof_path: string
           payment_status: string
           payment_submitted_at: string | null
@@ -46,6 +47,7 @@ export type Database = {
           has_diabetes?: string | null
           id?: string
           lead_status?: string
+          learning_goal?: string | null
           payment_proof_path: string
           payment_status?: string
           payment_submitted_at?: string | null
@@ -65,6 +67,7 @@ export type Database = {
           has_diabetes?: string | null
           id?: string
           lead_status?: string
+          learning_goal?: string | null
           payment_proof_path?: string
           payment_status?: string
           payment_submitted_at?: string | null
