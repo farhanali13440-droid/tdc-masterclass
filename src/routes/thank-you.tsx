@@ -99,21 +99,7 @@ function ThankYouPage() {
         customer,
       });
 
-      // Purchase ONLY when the server confirms the payment has been verified.
-      try {
-        const { confirmed } = await getRegistrationConfirmation({ data: { registrationId } });
-        if (!confirmed) return;
-        await trackMetaConversion("Purchase", {
-          dedupeKey: `purchase:${registrationId}`,
-          eventIdSuffix: registrationId.slice(0, 8),
-          registrationId,
-          value: 499,
-          currency: "PKR",
-          customer,
-        });
-      } catch {
-        /* tracking must never break the confirmation page */
-      }
+      // Purchase is fired on the checkout page at successful submission.
     })();
   }, [rid]);
 
