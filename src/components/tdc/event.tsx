@@ -18,8 +18,18 @@ export function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-/** Fired only on an intentional contact action (click), never on render. */
+/**
+ * Fired only on an intentional contact action (click), never on render.
+ * One event id per action is generated inside `trackMetaConversion` and shared
+ * by the browser Pixel (`eventID`) and CAPI (`event_id`). The short guard below
+ * stops a double-click / duplicate handler from creating a second event.
+ */
+let lastContactAt = 0;
+
 export function trackContactClick(): void {
+  const now = Date.now();
+  if (now - lastContactAt < 3000) return;
+  lastContactAt = now;
   void trackMetaConversion("Contact");
 }
 
