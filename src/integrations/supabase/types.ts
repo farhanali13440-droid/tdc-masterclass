@@ -26,11 +26,11 @@ export type Database = {
           full_name: string
           has_diabetes: string | null
           id: string
+          lead_status: string
           payment_proof_path: string
           payment_status: string
           payment_submitted_at: string | null
           registration_status: string
-          lead_status: string
           status: string
           whatsapp: string
         }
@@ -45,11 +45,11 @@ export type Database = {
           full_name: string
           has_diabetes?: string | null
           id?: string
+          lead_status?: string
           payment_proof_path: string
           payment_status?: string
           payment_submitted_at?: string | null
           registration_status?: string
-          lead_status?: string
           status?: string
           whatsapp: string
         }
@@ -64,11 +64,11 @@ export type Database = {
           full_name?: string
           has_diabetes?: string | null
           id?: string
+          lead_status?: string
           payment_proof_path?: string
           payment_status?: string
           payment_submitted_at?: string | null
           registration_status?: string
-          lead_status?: string
           status?: string
           whatsapp?: string
         }
