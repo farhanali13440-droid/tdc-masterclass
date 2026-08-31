@@ -12,7 +12,6 @@ import {
   WhatsAppButton,
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
-import { getRegistrationConfirmation } from "@/lib/meta.functions";
 import { readPendingRegistration, trackMetaConversion } from "@/lib/meta-tracking";
 
 export const Route = createFileRoute("/thank-you")({
