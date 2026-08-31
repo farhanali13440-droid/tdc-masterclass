@@ -185,9 +185,10 @@ export async function trackMetaConversion(
   } catch (error) {
     console.warn("[meta-pixel] browser event failed", error);
   }
-
+  await waitForFbp();
 
   try {
+
     await trackMetaEvent({
       data: {
         eventName,
