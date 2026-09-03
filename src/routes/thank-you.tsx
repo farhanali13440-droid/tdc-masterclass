@@ -5,7 +5,9 @@ import { useEffect } from "react";
 import { CtaButton, Eyebrow, TdcLogo } from "@/components/tdc/brand";
 import {
   Countdown,
+  EVENT_CURRENCY,
   EVENT_DATE,
+  EVENT_PRICE,
   EVENT_TIME,
   FloatingWhatsApp,
   WHATSAPP_NUMBER,
