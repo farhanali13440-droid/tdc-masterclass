@@ -217,6 +217,8 @@ const PENDING_KEY = "tdc_last_registration";
 
 export type PendingRegistration = {
   id: string;
+  /** True only when this browser actually completed a successful submission. */
+  submitted?: boolean;
 };
 
 export function storePendingRegistration(value: PendingRegistration): void {

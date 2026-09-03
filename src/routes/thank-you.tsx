@@ -5,7 +5,9 @@ import { useEffect } from "react";
 import { CtaButton, Eyebrow, TdcLogo } from "@/components/tdc/brand";
 import {
   Countdown,
+  EVENT_CURRENCY,
   EVENT_DATE,
+  EVENT_PRICE,
   EVENT_TIME,
   FloatingWhatsApp,
   WHATSAPP_NUMBER,
@@ -79,6 +81,11 @@ function ThankYouPage() {
     const registrationId = rid ?? pending?.id;
     if (!registrationId) return;
 
+    // Purchase only counts when THIS browser just completed a successful
+    // submission (flag written by the checkout page after the save succeeds).
+    // Someone opening /thank-you directly never triggers it.
+    const justSubmitted = pending?.submitted === true && pending.id === registrationId;
+
     void (async () => {
       // Registration completed — idempotent per registration id, so a refresh
       // never produces a second conversion.
@@ -88,7 +95,13 @@ function ThankYouPage() {
         registrationId,
       });
 
-      // Purchase is fired on the checkout page at successful submission.
+      if (!justSubmitted) return;
+      await trackMetaConversion("Purchase", {
+        dedupeKey: `purchase:${registrationId}`,
+        registrationId,
+        value: EVENT_PRICE,
+        currency: EVENT_CURRENCY,
+      });
     })();
   }, [rid]);
 
