@@ -37,7 +37,10 @@ export function trackContactClick(): void {
 export const EVENT_DATE = "6 September 2026";
 export const EVENT_TIME = "8:00 PM – 10:00 PM PKT";
 export const EVENT_TZ = "Pakistan Standard Time (PKT / UTC+5)";
-export const EVENT_FEE = "PKR 499";
+/** Single source of truth for the registration price used in UI + tracking. */
+export const EVENT_PRICE = 499;
+export const EVENT_CURRENCY = "PKR";
+export const EVENT_FEE = `${EVENT_CURRENCY} ${EVENT_PRICE}`;
 /** 6 September 2026, 8:00 PM PKT (UTC+5) */
 export const EVENT_TARGET_MS = Date.UTC(2026, 8, 6, 15, 0, 0);
 
