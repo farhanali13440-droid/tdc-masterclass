@@ -49,15 +49,39 @@ export function createEventId(eventName: MetaEventName, suffix?: string): string
   return `${base}_${suffix ? `${suffix}_` : ""}${randomId()}`;
 }
 
+/**
+ * Reads a cookie WITHOUT decoding it. Meta writes `_fbp`/`_fbc` as raw values
+ * and requires them to be forwarded byte-for-byte, so any decode/encode round
+ * trip here would count as "modifying the Meta ClickID".
+ */
 function readCookie(name: string): string | undefined {
   if (typeof document === "undefined") return undefined;
   const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
-  return match?.[1] ? decodeURIComponent(match[1]) : undefined;
+  return match?.[1] ? match[1] : undefined;
 }
 
 /** Meta browser id cookie. */
 export function getFbp(): string | undefined {
   return readCookie("_fbp");
+}
+
+/**
+ * Reads a query parameter exactly as it appears in the URL.
+ * URLSearchParams percent-decodes and turns `+` into a space, which mutates
+ * the fbclid — so the raw substring is used instead.
+ */
+function readRawQueryParam(name: string): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const query = window.location.search.replace(/^\?/, "");
+  for (const pair of query.split("&")) {
+    if (!pair) continue;
+    const eq = pair.indexOf("=");
+    const key = eq === -1 ? pair : pair.slice(0, eq);
+    if (key !== name) continue;
+    const raw = eq === -1 ? "" : pair.slice(eq + 1);
+    return raw || undefined;
+  }
+  return undefined;
 }
 
 /**
@@ -72,25 +96,37 @@ async function waitForFbp(maxMs = 1500): Promise<void> {
   }
 }
 
-
 /**
- * Meta click id. Uses the existing _fbc cookie when present; otherwise builds
- * one from an fbclid in the URL (never overwriting a valid existing value).
+ * Captures the click id on the very first page of the visit and persists it as
+ * a first-party `_fbc` cookie in Meta's official format
+ * `fb.<subdomainIndex>.<creationTime>.<fbclid>` — the fbclid is copied
+ * verbatim, never decoded, lowercased or truncated. An existing valid `_fbc`
+ * cookie is left untouched.
  */
-export function getFbc(): string | undefined {
+export function captureFbc(): string | undefined {
   const existing = readCookie("_fbc");
   if (existing) return existing;
-  if (typeof window === "undefined") return undefined;
-  const fbclid = new URLSearchParams(window.location.search).get("fbclid");
+  const fbclid = readRawQueryParam("fbclid");
   if (!fbclid) return undefined;
   const value = `fb.1.${Date.now()}.${fbclid}`;
   try {
-    document.cookie = `_fbc=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 90}; SameSite=Lax`;
+    // Written raw: encoding it would alter the value Meta expects back.
+    document.cookie = `_fbc=${value}; path=/; max-age=${60 * 60 * 24 * 90}; SameSite=Lax`;
   } catch {
     /* cookie write is best-effort */
   }
   return value;
 }
+
+/**
+ * Meta click id. Prefers the existing `_fbc` cookie (written by fbevents.js or
+ * by `captureFbc` on the landing page) and otherwise builds one from an
+ * fbclid still present in the current URL.
+ */
+export function getFbc(): string | undefined {
+  return readCookie("_fbc") ?? captureFbc();
+}
+
 
 /** Persistent, cross-refresh guard so the same conversion is never sent twice. */
 export function hasSentEvent(key: string): boolean {

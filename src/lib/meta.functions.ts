@@ -28,7 +28,9 @@ const eventSchema = z.object({
       city: z.string().max(100).optional(),
       externalId: z.string().max(120).optional(),
       fbp: z.string().max(200).optional(),
-      fbc: z.string().max(400).optional(),
+      // Generous cap: fbclid values can be long; never truncate, only accept.
+      fbc: z.string().max(1000).optional(),
+
     })
     .optional(),
 });
