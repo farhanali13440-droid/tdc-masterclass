@@ -1,7 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import { createEventId, captureFbc } from "@/lib/meta-tracking";
+import { createEventId } from "@/lib/meta-tracking";
 import { ensureMetaPixel } from "@/lib/meta-pixel-loader";
 
 
@@ -14,12 +14,8 @@ export function MetaPixel() {
   const lastPath = useRef<string | null>(null);
 
   useEffect(() => {
-    // Persist the ad click id on the first page of the visit, before any
-    // client-side navigation drops the fbclid query parameter.
-    captureFbc();
     if (lastPath.current === pathname) return;
     lastPath.current = pathname;
-
     // One deduplication key per actual page view, generated before the async
     // pixel load so React re-renders can never produce a second id.
     const eventId = createEventId("PageView");
