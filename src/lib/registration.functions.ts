@@ -99,29 +99,31 @@ export const submitPaymentProof = createServerFn({ method: "POST" })
     z.object({
       registrationId: z.string().uuid(),
       checkoutToken: z.string().uuid(),
-      paymentProofPath: z.string().min(1).max(500),
+      paymentProofPath: z.string().max(500),
     }).parse(input),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: registration, error: lookupError } = await supabaseAdmin
       .from("masterclass_registrations")
-      .select("id, checkout_token")
+      .select("id, checkout_token, amount_pkr")
       .eq("id", data.registrationId)
       .maybeSingle();
     if (lookupError || !registration || registration.checkout_token !== data.checkoutToken) {
       throw new Error("This checkout session is no longer valid. Please start again.");
     }
-    if (!data.paymentProofPath.startsWith(data.registrationId + "/")) {
+    // A fully discounted (free) registration needs no payment screenshot.
+    const isFree = registration.amount_pkr === 0;
+    if (!isFree && !data.paymentProofPath.startsWith(data.registrationId + "/")) {
       throw new Error("Invalid payment proof.");
     }
     const { error } = await supabaseAdmin.from("masterclass_registrations").update({
       payment_proof_path: data.paymentProofPath,
       payment_submitted_at: new Date().toISOString(),
-      payment_status: "Payment Submitted",
-      registration_status: "Payment Pending",
-      lead_status: "Payment Submitted",
-      status: "Payment Submitted",
+      payment_status: isFree ? "Free (100% Coupon)" : "Payment Submitted",
+      registration_status: isFree ? "Confirmed" : "Payment Pending",
+      lead_status: isFree ? "Free Registration" : "Payment Submitted",
+      status: isFree ? "Free Registration" : "Payment Submitted",
     }).eq("id", data.registrationId);
     if (error) throw new Error("Unable to submit your payment proof. Please try again.");
     return { ok: true };
