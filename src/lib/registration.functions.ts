@@ -2,12 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const BASE_PRICE = 499;
+
 const leadSchema = z.object({
   fullName: z.string().trim().min(2).max(100),
   whatsapp: z.string().trim().min(10).max(20).regex(/^[0-9+\-\s()]+$/),
   email: z.string().trim().email().max(255),
   city: z.string().trim().min(2).max(80),
   learningGoal: z.string().trim().max(500).nullable(),
+  couponCode: z.string().trim().max(40).nullable().optional(),
 });
 
 async function requireAdmin(context: { claims?: Record<string, unknown> }) {
@@ -16,10 +19,56 @@ async function requireAdmin(context: { claims?: Record<string, unknown> }) {
   if (appMetadata['role'] !== "admin") throw new Error("Forbidden");
 }
 
+/**
+ * Single server-side source of truth for coupon pricing. The browser never
+ * decides the payable amount — it only displays what this returns.
+ */
+async function priceWithCoupon(rawCode: string | null | undefined) {
+  const code = rawCode?.trim().toUpperCase();
+  const base = BASE_PRICE;
+  if (!code) return { code: null, discountPercent: 0, discount: 0, total: base, base };
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: coupon } = await supabaseAdmin
+    .from("coupons")
+    .select("code, discount_percent, expires_at, active")
+    .eq("code", code)
+    .maybeSingle();
+
+  if (!coupon || !coupon.active) throw new Error("This coupon code is not valid.");
+  if (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now()) {
+    throw new Error("This coupon code has expired.");
+  }
+  const discount = Math.round((base * coupon.discount_percent) / 100);
+  return {
+    code: coupon.code,
+    discountPercent: coupon.discount_percent,
+    discount,
+    total: Math.max(0, base - discount),
+    base,
+  };
+}
+
+/** Public check used by the "Apply Coupon" button. */
+export const validateCoupon = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ code: z.string().trim().min(1).max(40) }).parse(input))
+  .handler(async ({ data }) => {
+    try {
+      const priced = await priceWithCoupon(data.code);
+      return { valid: true as const, ...priced };
+    } catch (error) {
+      return {
+        valid: false as const,
+        message: error instanceof Error ? error.message : "This coupon code is not valid.",
+      };
+    }
+  });
+
 export const createCheckoutLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => leadSchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const priced = await priceWithCoupon(data.couponCode ?? null);
     const id = crypto.randomUUID();
     const checkoutToken = crypto.randomUUID();
     const { error } = await supabaseAdmin.from("masterclass_registrations").insert({
@@ -29,7 +78,10 @@ export const createCheckoutLead = createServerFn({ method: "POST" })
       email: data.email,
       city: data.city,
       learning_goal: data.learningGoal,
-      amount_pkr: 499,
+      amount_pkr: priced.total,
+      original_amount_pkr: priced.base,
+      discount_amount_pkr: priced.discount,
+      coupon_code: priced.code,
       payment_proof_path: "",
       status: "Opted In",
       lead_status: "Checkout Started",
@@ -38,8 +90,9 @@ export const createCheckoutLead = createServerFn({ method: "POST" })
       checkout_token: checkoutToken,
     });
     if (error) throw new Error("Unable to save your details. Please try again.");
-    return { id, checkoutToken };
+    return { id, checkoutToken, amountPkr: priced.total, discountPkr: priced.discount, couponCode: priced.code };
   });
+
 
 export const submitPaymentProof = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
