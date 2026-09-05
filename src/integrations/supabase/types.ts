@@ -14,20 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupons: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          discount_percent: number
+          expires_at: string | null
+          id: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          discount_percent: number
+          expires_at?: string | null
+          id?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       masterclass_registrations: {
         Row: {
           age: number | null
           amount_pkr: number
           checkout_token: string | null
           city: string
+          coupon_code: string | null
           created_at: string
           diabetes_type: string | null
+          discount_amount_pkr: number
           email: string
           full_name: string
           has_diabetes: string | null
           id: string
           lead_status: string
           learning_goal: string | null
+          original_amount_pkr: number
           payment_proof_path: string
           payment_status: string
           payment_submitted_at: string | null
@@ -40,14 +70,17 @@ export type Database = {
           amount_pkr?: number
           checkout_token?: string | null
           city: string
+          coupon_code?: string | null
           created_at?: string
           diabetes_type?: string | null
+          discount_amount_pkr?: number
           email: string
           full_name: string
           has_diabetes?: string | null
           id?: string
           lead_status?: string
           learning_goal?: string | null
+          original_amount_pkr?: number
           payment_proof_path: string
           payment_status?: string
           payment_submitted_at?: string | null
@@ -60,14 +93,17 @@ export type Database = {
           amount_pkr?: number
           checkout_token?: string | null
           city?: string
+          coupon_code?: string | null
           created_at?: string
           diabetes_type?: string | null
+          discount_amount_pkr?: number
           email?: string
           full_name?: string
           has_diabetes?: string | null
           id?: string
           lead_status?: string
           learning_goal?: string | null
+          original_amount_pkr?: number
           payment_proof_path?: string
           payment_status?: string
           payment_submitted_at?: string | null
