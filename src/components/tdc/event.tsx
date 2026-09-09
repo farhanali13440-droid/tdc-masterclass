@@ -48,9 +48,7 @@ export const WHATSAPP_NUMBER = "+92 335 3229580";
 const WHATSAPP_DIGITS = "923353229580";
 const WHATSAPP_MESSAGE =
   "Hi, I have a question about the Diabetes Control Masterclass on 20 September 2026.";
-export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
-  WHATSAPP_MESSAGE,
-)}`;
+export const WHATSAPP_LINK = "https://chat.whatsapp.com/Go9yUZ6vePOCPjBGVXKURD";
 
 function useTimeLeft() {
   const [now, setNow] = useState<number | null>(null);
