@@ -105,7 +105,6 @@ function ThankYouPage() {
     })();
   }, [rid]);
 
-
   return (
     <div id="thank-you-page" className="flex min-h-screen flex-col">
       <main className="flex-1">
@@ -125,6 +124,24 @@ function ThankYouPage() {
               Thank you for registering for the Diabetes Control Masterclass by The Diabetes
               Centre Pakistan.
             </p>
+
+            <div className="w-full max-w-2xl rounded-3xl bg-background px-6 py-6 text-center text-navy shadow-float sm:px-8 sm:py-8">
+              <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-brand">
+                Important — Join the Community First
+              </p>
+              <h2 className="mt-2 text-2xl font-extrabold sm:text-3xl">
+                Join the WhatsApp Community
+              </h2>
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                This is where you’ll receive all masterclass updates, reminders, the Zoom joining
+                link, and your exclusive bonuses. Please join the community now so you don’t miss
+                anything.
+              </p>
+              <WhatsAppButton variant="solid" size="lg" className="mt-5">
+                Join the WhatsApp Community
+              </WhatsAppButton>
+            </div>
+
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-2xl bg-navy-foreground/12 px-6 py-4 text-sm font-bold ring-1 ring-navy-foreground/20">
               <span className="inline-flex items-center gap-2">
                 <CalendarDays className="h-4 w-4" aria-hidden="true" /> {EVENT_DATE}
@@ -177,13 +194,9 @@ function ThankYouPage() {
             <div className="mt-10 rounded-3xl border border-border bg-tint p-6">
               <TdcLogo />
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Please watch for further masterclass instructions from The Diabetes Centre
-                Pakistan on WhatsApp and email. Need help with your registration? Message us on{" "}
+                Need help with your registration? Message us on{" "}
                 <strong className="text-navy">{WHATSAPP_NUMBER}</strong>.
               </p>
-              <WhatsAppButton size="md" className="mt-4">
-                Chat With Us on WhatsApp
-              </WhatsAppButton>
             </div>
 
             <div className="mt-10 flex justify-center">
