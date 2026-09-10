@@ -11,6 +11,7 @@ import {
   EVENT_TIME,
   FloatingWhatsApp,
   WHATSAPP_NUMBER,
+  WHATSAPP_COMMUNITY_LINK,
   WhatsAppButton,
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
@@ -137,7 +138,12 @@ function ThankYouPage() {
                 link, and your exclusive bonuses. Please join the community now so you don’t miss
                 anything.
               </p>
-              <WhatsAppButton variant="solid" size="lg" className="mt-5">
+              <WhatsAppButton
+                href={WHATSAPP_COMMUNITY_LINK}
+                variant="solid"
+                size="lg"
+                className="mt-5"
+              >
                 Join the WhatsApp Community
               </WhatsAppButton>
             </div>
