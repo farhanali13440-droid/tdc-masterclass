@@ -41,6 +41,59 @@ export type Database = {
         }
         Relationships: []
       }
+      ghl_sync_events: {
+        Row: {
+          attempts: number
+          created_at: string
+          event_type: string
+          ghl_contact_id: string | null
+          id: string
+          last_error: string | null
+          locked_until: string | null
+          registration_id: string
+          sent_at: string | null
+          source_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          event_type: string
+          ghl_contact_id?: string | null
+          id?: string
+          last_error?: string | null
+          locked_until?: string | null
+          registration_id: string
+          sent_at?: string | null
+          source_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          event_type?: string
+          ghl_contact_id?: string | null
+          id?: string
+          last_error?: string | null
+          locked_until?: string | null
+          registration_id?: string
+          sent_at?: string | null
+          source_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ghl_sync_events_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "masterclass_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       masterclass_registrations: {
         Row: {
           age: number | null

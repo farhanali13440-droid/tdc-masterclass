@@ -15,6 +15,13 @@
       "when": 1788627416088,
       "tag": "0001_add_coupons",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789055169518,
+      "tag": "0002_add_ghl_sync_events",
+      "breakpoints": true
     }
   ]
 }

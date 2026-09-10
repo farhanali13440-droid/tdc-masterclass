@@ -15,6 +15,7 @@ import {
   WhatsAppButton,
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
+import { retryRegistrationCrmSync } from "@/lib/ghl.functions";
 import { readPendingRegistration, trackMetaConversion } from "@/lib/meta-tracking";
 
 export const Route = createFileRoute("/thank-you")({
@@ -86,6 +87,12 @@ function ThankYouPage() {
     // submission (flag written by the checkout page after the save succeeds).
     // Someone opening /thank-you directly never triggers it.
     const justSubmitted = pending?.submitted === true && pending.id === registrationId;
+
+    // GHL safety net: delivers only CRM events still recorded as unsent for this
+    // registration. Idempotent on the server, so a refresh never duplicates.
+    if (/^[0-9a-f-]{36}$/i.test(registrationId)) {
+      void retryRegistrationCrmSync({ data: { registrationId } }).catch(() => undefined);
+    }
 
     void (async () => {
       // Registration completed — idempotent per registration id, so a refresh

@@ -90,6 +90,17 @@ export const createCheckoutLead = createServerFn({ method: "POST" })
       checkout_token: checkoutToken,
     });
     if (error) throw new Error("Unable to save your details. Please try again.");
+    // GHL CRM: the lead now exists in Supabase, so it is safe to send. Server-only,
+    // idempotent per registration id, time-boxed, and never throws into checkout.
+    try {
+      const { syncLeadToGhl } = await import("./ghl.server");
+      await syncLeadToGhl(id);
+    } catch (crmError) {
+      console.error(
+        "[ghl] lead sync could not start",
+        crmError instanceof Error ? crmError.message : crmError,
+      );
+    }
     return { id, checkoutToken, amountPkr: priced.total, discountPkr: priced.discount, couponCode: priced.code };
   });
 
@@ -106,7 +117,7 @@ export const submitPaymentProof = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: registration, error: lookupError } = await supabaseAdmin
       .from("masterclass_registrations")
-      .select("id, checkout_token, amount_pkr")
+      .select("id, checkout_token, amount_pkr, payment_submitted_at")
       .eq("id", data.registrationId)
       .maybeSingle();
     if (lookupError || !registration || registration.checkout_token !== data.checkoutToken) {
@@ -126,6 +137,19 @@ export const submitPaymentProof = createServerFn({ method: "POST" })
       status: isFree ? "Free Registration" : "Payment Submitted",
     }).eq("id", data.registrationId);
     if (error) throw new Error("Unable to submit your payment proof. Please try again.");
+    // GHL CRM: payment proof (or free registration) is saved, so notify GHL once
+    // per registration id. Never throws into the registration flow.
+    try {
+      const { syncPaymentSubmittedToGhl } = await import("./ghl.server");
+      await syncPaymentSubmittedToGhl(data.registrationId, {
+        previouslySubmitted: Boolean(registration.payment_submitted_at),
+      });
+    } catch (crmError) {
+      console.error(
+        "[ghl] payment sync could not start",
+        crmError instanceof Error ? crmError.message : crmError,
+      );
+    }
     return { ok: true };
   });
 
