@@ -4,6 +4,8 @@
 //     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+// WhatsApp CTA routing is defined in src/components/tdc/event.tsx; keep this config change
+// intentionally minimal so the production host rebuilds the audited main branch.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
