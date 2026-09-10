@@ -12,7 +12,7 @@ export function WhatsAppIcon({ className }: { className?: string }) {
       />
       <path
         fill="#fff"
-        d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35Z"
+        d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.2-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35Z"
       />
     </svg>
   );
@@ -48,7 +48,10 @@ export const WHATSAPP_NUMBER = "+92 335 3229580";
 const WHATSAPP_DIGITS = "923353229580";
 const WHATSAPP_MESSAGE =
   "Hi, I have a question about the Diabetes Control Masterclass on 20 September 2026.";
-export const WHATSAPP_LINK = "https://chat.whatsapp.com/Go9yUZ6vePOCPjBGVXKURD";
+/** Direct WhatsApp chat for sales-page, checkout, help, and contact CTAs. */
+export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+/** Community invite is intentionally separate and should only be used on the Thank You page. */
+export const WHATSAPP_COMMUNITY_LINK = "https://chat.whatsapp.com/Go9yUZ6vePOCPjBGVXKURD";
 
 function useTimeLeft() {
   const [now, setNow] = useState<number | null>(null);
@@ -165,15 +168,17 @@ export function WhatsAppButton({
   variant = "outline",
   className,
   size = "lg",
+  href = WHATSAPP_LINK,
 }: {
   children?: React.ReactNode;
   variant?: "outline" | "light" | "solid";
   className?: string;
   size?: "md" | "lg";
+  href?: string;
 }) {
   return (
     <a
-      href={WHATSAPP_LINK}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       onClick={trackContactClick}
