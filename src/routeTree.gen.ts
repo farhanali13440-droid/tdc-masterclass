@@ -14,8 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LeadstdcRouteImport } from './routes/leadstdc'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
-import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ApiPublicCronGhlSyncRetryRouteImport } from './routes/api/public/cron/ghl-sync-retry'
+import { Route as CommunityRouteImport } from './routes/community'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,17 +42,17 @@ const ThankYouRoute = ThankYouRouteImport.update({
   path: '/thank-you',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicCronGhlSyncRetryRoute =
   ApiPublicCronGhlSyncRetryRouteImport.update({
     id: '/api/public/cron/ghl-sync-retry',
     path: '/api/public/cron/ghl-sync-retry',
     getParentRoute: () => rootRouteImport,
   } as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -60,8 +60,8 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/leadstdc': typeof LeadstdcRoute
   '/thank-you': typeof ThankYouRoute
-  '/community': typeof CommunityRoute
   '/api/public/cron/ghl-sync-retry': typeof ApiPublicCronGhlSyncRetryRoute
+  '/community': typeof CommunityRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,8 +69,8 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/leadstdc': typeof LeadstdcRoute
   '/thank-you': typeof ThankYouRoute
-  '/community': typeof CommunityRoute
   '/api/public/cron/ghl-sync-retry': typeof ApiPublicCronGhlSyncRetryRoute
+  '/community': typeof CommunityRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,8 +79,8 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/leadstdc': typeof LeadstdcRoute
   '/thank-you': typeof ThankYouRoute
-  '/community': typeof CommunityRoute
   '/api/public/cron/ghl-sync-retry': typeof ApiPublicCronGhlSyncRetryRoute
+  '/community': typeof CommunityRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,8 +90,8 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/leadstdc'
     | '/thank-you'
-    | '/community'
     | '/api/public/cron/ghl-sync-retry'
+    | '/community'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,8 +99,8 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/leadstdc'
     | '/thank-you'
-    | '/community'
     | '/api/public/cron/ghl-sync-retry'
+    | '/community'
   id:
     | '__root__'
     | '/'
@@ -108,8 +108,8 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/leadstdc'
     | '/thank-you'
-    | '/community'
     | '/api/public/cron/ghl-sync-retry'
+    | '/community'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,8 +118,8 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   LeadstdcRoute: typeof LeadstdcRoute
   ThankYouRoute: typeof ThankYouRoute
-  CommunityRoute: typeof CommunityRoute
   ApiPublicCronGhlSyncRetryRoute: typeof ApiPublicCronGhlSyncRetryRoute
+  CommunityRoute: typeof CommunityRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -159,18 +159,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThankYouRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/cron/ghl-sync-retry': {
       id: '/api/public/cron/ghl-sync-retry'
       path: '/api/public/cron/ghl-sync-retry'
       fullPath: '/api/public/cron/ghl-sync-retry'
       preLoaderRoute: typeof ApiPublicCronGhlSyncRetryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -182,8 +182,8 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   LeadstdcRoute: LeadstdcRoute,
   ThankYouRoute: ThankYouRoute,
-  CommunityRoute: CommunityRoute,
   ApiPublicCronGhlSyncRetryRoute: ApiPublicCronGhlSyncRetryRoute,
+  CommunityRoute: CommunityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
