@@ -59,8 +59,8 @@ function CommunityPage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-              کراچی میں رہتے ہیں؟
-              <span className="mt-2 block text-brand">تو یہ پیغام آپ کے لیے ہے</span>
+              Apko diabetes hai or Karachi me rehty hain?
+              <span className="mt-2 block text-brand">To ye WhatsApp Community apk liye hai</span>
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
