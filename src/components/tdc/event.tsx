@@ -49,8 +49,8 @@ const WHATSAPP_MESSAGE =
   "Hi, I have a question about the Diabetes Control Masterclass on 12 October 2026.";
 /** Direct WhatsApp chat for sales-page, checkout, help, and contact CTAs. */
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
-/** Community invite is intentionally separate and should only be used on the Thank You page. */
-export const WHATSAPP_COMMUNITY_LINK = "https://chat.whatsapp.com/Go9yUZ6vePOCPjBGVXKURD";
+/** TDC webinar WhatsApp community invite shown on the Thank You page. */
+export const WHATSAPP_COMMUNITY_LINK = "https://chat.whatsapp.com/FK3uju6zcnm81quf0KjHxa";
 
 function useTimeLeft() {
   const [now, setNow] = useState<number | null>(null);
