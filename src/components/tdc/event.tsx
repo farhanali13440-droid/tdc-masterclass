@@ -33,21 +33,20 @@ export function trackContactClick(): void {
   void trackMetaConversion("Contact");
 }
 
-
-export const EVENT_DATE = "Sunday, 4 October 2026";
+export const EVENT_DATE = "Monday, 12 October 2026";
 export const EVENT_TIME = "8:00 PM – 10:00 PM PKT";
 export const EVENT_TZ = "Pakistan Standard Time (PKT / UTC+5)";
 /** Single source of truth for the registration price used in UI + tracking. */
 export const EVENT_PRICE = 499;
 export const EVENT_CURRENCY = "PKR";
 export const EVENT_FEE = `${EVENT_CURRENCY} ${EVENT_PRICE}`;
-/** 4 October 2026, 8:00 PM PKT (UTC+5) */
-export const EVENT_TARGET_MS = Date.UTC(2026, 9, 4, 15, 0, 0);
+/** 12 October 2026, 8:00 PM PKT (UTC+5) */
+export const EVENT_TARGET_MS = Date.UTC(2026, 9, 12, 15, 0, 0);
 
 export const WHATSAPP_NUMBER = "+92 335 3229580";
 const WHATSAPP_DIGITS = "923353229580";
 const WHATSAPP_MESSAGE =
-  "Hi, I have a question about the Diabetes Control Masterclass on 4 October 2026.";
+  "Hi, I have a question about the Diabetes Control Masterclass on 12 October 2026.";
 /** Direct WhatsApp chat for sales-page, checkout, help, and contact CTAs. */
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 /** Community invite is intentionally separate and should only be used on the Thank You page. */
