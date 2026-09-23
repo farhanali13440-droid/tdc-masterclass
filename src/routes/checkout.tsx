@@ -12,7 +12,7 @@ import { storePendingRegistration, trackMetaConversion } from "@/lib/meta-tracki
 export const Route = createFileRoute("/checkout")({ component: CheckoutPage });
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const BANK_DETAILS = [["Bank","Dubai Islamic Bank"],["Account Title","The diabetes center"],["Account Number","155380005"],["IBAN","PK76DUIB0000000155380005"]] as const;
+const BANK_DETAILS = [["Account Title","The Diabetes Centre"],["Account Number","0155380001"],["Bank","The Dubai Islamic Bank"]] as const;
 const schema = z.object({ fullName:z.string().trim().min(2,"Please enter your full name").max(100), whatsapp:z.string().trim().min(10,"Please enter a valid WhatsApp number").max(20).regex(/^[0-9+\-\s()]+$/,"Please enter a valid WhatsApp number"), email:z.string().trim().email("Please enter a valid email address").max(255), city:z.string().trim().min(2,"Please enter your city").max(80), learningGoal:z.string().trim().max(500).optional() });
 type FormValues={fullName:string;whatsapp:string;email:string;city:string;learningGoal:string};
 type Errors=Partial<Record<keyof FormValues|"paymentProof",string|undefined>>;
