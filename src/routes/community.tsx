@@ -34,7 +34,6 @@ function CommunityPage() {
   const joinCommunity = () => {
     void trackMetaConversion("Lead", {
       sessionKey: "tdc_karachi_whatsapp_community",
-      source: "whatsapp_community_landing_page",
     });
     window.open(COMMUNITY_URL, "_blank", "noopener,noreferrer");
   };

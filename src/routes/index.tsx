@@ -39,6 +39,10 @@ import foodPlate from "@/assets/food-plate.jpg";
 import heroImage from "@/assets/hero-diabetes.jpg";
 import storyImage from "@/assets/story-ahmed.jpg";
 import walkingFamily from "@/assets/walking-family.jpg";
+import t1 from "@/assets/testimonial-1.jpeg.asset.json";
+import t2 from "@/assets/testimonial-2.jpeg.asset.json";
+import t3 from "@/assets/testimonial-3.jpeg.asset.json";
+import t4 from "@/assets/testimonial-4.jpeg.asset.json";
 import {
   CtaButton,
   Eyebrow,
@@ -884,6 +888,30 @@ function SalesPage() {
           </div>
         </Section>
 
+
+        {/* TESTIMONIALS */}
+        <Section tone="tint">
+          <SectionHeading
+            eyebrow="Testimonials"
+            title="What Our Participants Say"
+            intro="Real messages from people who attended TDC sessions."
+          />
+          <div className="columns-1 gap-5 sm:columns-2">
+            {[t1, t2, t3, t4].map((t, i) => (
+              <figure
+                key={t.url}
+                className="mb-5 break-inside-avoid overflow-hidden rounded-3xl border border-border bg-card p-3 shadow-card"
+              >
+                <img
+                  src={t.url}
+                  alt={`Participant testimonial message ${i + 1}`}
+                  loading="lazy"
+                  className="h-auto w-full rounded-2xl"
+                />
+              </figure>
+            ))}
+          </div>
+        </Section>
 
         {/* FAQ */}
         <Section id="faq">
