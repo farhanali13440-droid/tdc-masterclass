@@ -50,7 +50,7 @@ const WHATSAPP_MESSAGE =
 /** Direct WhatsApp chat for sales-page, checkout, help, and contact CTAs. */
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 /** TDC webinar WhatsApp community invite shown on the Thank You page. */
-export const WHATSAPP_COMMUNITY_LINK = "https://chat.whatsapp.com/FK3uju6zcnm81quf0KjHxa";
+export const WHATSAPP_COMMUNITY_LINK = "https://chat.whatsapp.com/Fzeq1EgYPJMF51hFBoH7Js";
 
 function useTimeLeft() {
   const [now, setNow] = useState<number | null>(null);
