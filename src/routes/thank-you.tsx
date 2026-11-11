@@ -16,7 +16,7 @@ import {
 } from "@/components/tdc/event";
 import { SiteFooter } from "@/components/tdc/site";
 import { retryRegistrationCrmSync } from "@/lib/ghl.functions";
-import { readPendingRegistration, trackMetaConversion } from "@/lib/meta-tracking";
+import { readPendingRegistration, trackFBCustomOnce, trackMetaConversion } from "@/lib/meta-tracking";
 
 export const Route = createFileRoute("/thank-you")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -96,6 +96,8 @@ function ThankYouPage() {
 
     // Fire on mount for the registration saved by checkout, never a direct visit.
     if (justSubmitted) {
+      void trackFBCustomOnce("PaidRegistration", `custom:purchase:${registrationId}`,
+        "persistent", { value: EVENT_PRICE, currency: EVENT_CURRENCY });
       void trackMetaConversion("Purchase", {
         dedupeKey: `purchase:${registrationId}`,
         registrationId,
