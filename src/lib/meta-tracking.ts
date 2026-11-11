@@ -212,6 +212,20 @@ export async function trackMetaConversion(
   return { sent: true, eventId };
 }
 
+/**
+ * Fires a Pixel-only custom event (e.g. fbq('trackCustom', ...)). Browser-only,
+ * never throws, and safely no-ops when the pixel is blocked or not loaded yet.
+ */
+export async function trackFBCustom(eventName: string): Promise<void> {
+  if (typeof window === "undefined") return;
+  try {
+    await ensureMetaPixel();
+    window.fbq?.("trackCustom", eventName);
+  } catch (error) {
+    console.warn("[meta-pixel] custom event failed", error);
+  }
+}
+
 /** Stores the just-completed registration so the thank-you page can use it. */
 const PENDING_KEY = "tdc_last_registration";
 

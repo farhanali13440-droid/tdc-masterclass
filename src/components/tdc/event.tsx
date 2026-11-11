@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { trackMetaConversion } from "@/lib/meta-tracking";
+import { trackFBCustom, trackMetaConversion } from "@/lib/meta-tracking";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
