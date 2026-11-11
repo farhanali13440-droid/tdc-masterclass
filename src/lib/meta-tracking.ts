@@ -36,6 +36,7 @@ declare global {
 }
 
 const DEDUPE_PREFIX = "tdc_meta_evt:";
+const inFlightEvents = new Map<string, Promise<{ sent: boolean; eventId?: string }>>();
 
 function randomId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -146,7 +147,23 @@ export type TrackOptions = {
  * Fires one conversion through both the Pixel and the Conversions API using a
  * single shared event id. Never throws — tracking must not break the funnel.
  */
-export async function trackMetaConversion(
+export function trackMetaConversion(
+  eventName: MetaEventName,
+  options: TrackOptions = {},
+): Promise<{ sent: boolean; eventId?: string }> {
+  const key = options.dedupeKey ?? options.sessionKey;
+  const lockKey = key ? `${eventName}:${key}` : undefined;
+  const pending = lockKey ? inFlightEvents.get(lockKey) : undefined;
+  if (pending) return pending;
+  const dispatch = dispatchMetaConversion(eventName, options);
+  if (lockKey) {
+    inFlightEvents.set(lockKey, dispatch);
+    void dispatch.finally(() => inFlightEvents.delete(lockKey));
+  }
+  return dispatch;
+}
+
+async function dispatchMetaConversion(
   eventName: MetaEventName,
   options: TrackOptions = {},
 ): Promise<{ sent: boolean; eventId?: string }> {
@@ -172,22 +189,24 @@ export async function trackMetaConversion(
     customData['currency'] = options.currency ?? "PKR";
   }
 
-  // Mark before awaiting so a fast refresh can't double-fire.
-  if (dedupeKey) markEventSent(dedupeKey, eventId);
-  if (sessionKey) markSessionEventSent(sessionKey, eventId);
-
   // The pixel script loads asynchronously. Awaiting it here is what guarantees
   // the BROWSER copy of the event actually reaches Meta (previously a fast
   // submit could call window.fbq before it existed, leaving CAPI-only events).
   try {
-    await ensureMetaPixel();
-    window.fbq?.("track", eventName, customData, { eventID: eventId });
+    const pixelId = await ensureMetaPixel();
+    if (!pixelId || !window.fbq) return { sent: false };
+    window.fbq("track", eventName, customData, { eventID: eventId });
+    // Only persist the guard after the browser event is actually queued.
+    if (dedupeKey) markEventSent(dedupeKey, eventId);
+    if (sessionKey) markSessionEventSent(sessionKey, eventId);
   } catch (error) {
     console.warn("[meta-pixel] browser event failed", error);
+    return { sent: false };
   }
-  await waitForFbp();
-
-  try {
+  // CAPI delivery continues independently; navigation only waits for the Pixel.
+  void (async () => {
+    await waitForFbp();
+    try {
 
     await trackMetaEvent({
       data: {
@@ -206,8 +225,9 @@ export async function trackMetaConversion(
     });
   } catch (error) {
     // CAPI problems must never surface to the visitor.
-    console.warn("[meta-capi] client dispatch failed", error);
-  }
+      console.warn("[meta-capi] client dispatch failed", error);
+    }
+  })();
 
   return { sent: true, eventId };
 }

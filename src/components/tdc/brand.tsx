@@ -1,18 +1,35 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 import logo from "@/assets/tdc-logo.png";
 import { cn } from "@/lib/utils";
 import { trackMetaConversion } from "@/lib/meta-tracking";
 
 /** Intentional click on a "register / join" CTA = the visitor starts checkout. */
-export function trackInitiateCheckout(): void {
-  void trackMetaConversion("InitiateCheckout", {
+export function trackInitiateCheckout() {
+  return trackMetaConversion("InitiateCheckout", {
     sessionKey: "initiatecheckout",
     value: 499,
     currency: "PKR",
   });
+}
+
+export function useTrackedCheckoutClick() {
+  const navigate = useNavigate();
+  return async (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      void trackInitiateCheckout();
+      return;
+    }
+    event.preventDefault();
+    // Await browser dispatch, not the slower CAPI request, before changing pages.
+    await Promise.race([
+      trackInitiateCheckout(),
+      new Promise<void>((resolve) => window.setTimeout(resolve, 2000)),
+    ]);
+    await navigate({ to: "/checkout" });
+  };
 }
 
 export const MASTERCLASS_PRICE = "PKR 499";
@@ -73,10 +90,11 @@ export function CtaButton({
   className,
   event,
 }: CtaProps) {
+  const checkoutClick = useTrackedCheckoutClick();
   return (
     <Link
       to="/checkout"
-      onClick={trackInitiateCheckout}
+      onClick={checkoutClick}
       data-cta={event}
       id={`cta-${event}`}
       className={cn(
