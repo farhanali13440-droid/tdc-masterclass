@@ -203,9 +203,10 @@ async function dispatchMetaConversion(
     console.warn("[meta-pixel] browser event failed", error);
     return { sent: false };
   }
-  await waitForFbp();
-
-  try {
+  // CAPI delivery continues independently; navigation only waits for the Pixel.
+  void (async () => {
+    await waitForFbp();
+    try {
 
     await trackMetaEvent({
       data: {
@@ -224,8 +225,9 @@ async function dispatchMetaConversion(
     });
   } catch (error) {
     // CAPI problems must never surface to the visitor.
-    console.warn("[meta-capi] client dispatch failed", error);
-  }
+      console.warn("[meta-capi] client dispatch failed", error);
+    }
+  })();
 
   return { sent: true, eventId };
 }
