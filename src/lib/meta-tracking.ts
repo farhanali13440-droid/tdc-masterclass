@@ -246,6 +246,27 @@ export async function trackFBCustom(eventName: string): Promise<void> {
   }
 }
 
+export async function trackFBCustomOnce(
+  eventName: string,
+  guardKey: string,
+  scope: "session" | "persistent" = "session",
+  customData?: Record<string, unknown>,
+): Promise<void> {
+  if (typeof window === "undefined") return;
+  const alreadySent = scope === "session" ? hasSentSessionEvent(guardKey) :
+hasSentEvent(guardKey);
+  if (alreadySent) return;
+  try {
+    await ensureMetaPixel();
+    if (!window.fbq) return;
+    window.fbq("trackCustom", eventName, customData);
+    if (scope === "session") markSessionEventSent(guardKey, eventName);
+    else markEventSent(guardKey, eventName);
+  } catch (error) {
+    console.warn("[meta-pixel] custom event failed", error);
+  }
+}
+
 /** Stores the just-completed registration so the thank-you page can use it. */
 const PENDING_KEY = "tdc_last_registration";
 
