@@ -4,10 +4,11 @@ import type { MouseEvent, ReactNode } from "react";
 
 import logo from "@/assets/tdc-logo.png";
 import { cn } from "@/lib/utils";
-import { trackMetaConversion } from "@/lib/meta-tracking";
+import { trackFBCustomOnce, trackMetaConversion } from "@/lib/meta-tracking";
 
 /** Intentional click on a "register / join" CTA = the visitor starts checkout. */
 export function trackInitiateCheckout() {
+  void trackFBCustomOnce("CheckoutStarted", "custom:initiatecheckout");
   return trackMetaConversion("InitiateCheckout", {
     sessionKey: "initiatecheckout",
     value: 499,
