@@ -95,14 +95,7 @@ function ThankYouPage() {
     }
 
     void (async () => {
-      // Registration completed — idempotent per registration id, so a refresh
-      // never produces a second conversion.
-      await trackMetaConversion("CompleteRegistration", {
-        dedupeKey: `completeregistration:${registrationId}`,
-        eventIdSuffix: registrationId.slice(0, 8),
-        registrationId,
-      });
-
+      // CompleteRegistration fires on the checkout page when step 1 succeeds.
       if (!justSubmitted) return;
       await trackMetaConversion("Purchase", {
         dedupeKey: `purchase:${registrationId}`,
