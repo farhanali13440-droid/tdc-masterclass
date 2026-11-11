@@ -80,7 +80,7 @@ function ThankYouPage() {
 
   useEffect(() => {
     const pending = readPendingRegistration();
-    const registrationId = rid ?? pending?.id;
+    const registrationId = rid;
     if (!registrationId) return;
 
     // Purchase only counts when THIS browser just completed a successful
@@ -94,16 +94,15 @@ function ThankYouPage() {
       void retryRegistrationCrmSync({ data: { registrationId } }).catch(() => undefined);
     }
 
-    void (async () => {
-      // CompleteRegistration fires on the checkout page when step 1 succeeds.
-      if (!justSubmitted) return;
-      await trackMetaConversion("Purchase", {
+    // Fire on mount for the registration saved by checkout, never a direct visit.
+    if (justSubmitted) {
+      void trackMetaConversion("Purchase", {
         dedupeKey: `purchase:${registrationId}`,
         registrationId,
         value: EVENT_PRICE,
         currency: EVENT_CURRENCY,
       });
-    })();
+    }
   }, [rid]);
 
   return (

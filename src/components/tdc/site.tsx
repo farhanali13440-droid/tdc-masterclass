@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import { CtaButton, TdcLogo, trackInitiateCheckout } from "./brand";
+import { CtaButton, TdcLogo, useTrackedCheckoutClick } from "./brand";
 
 export function SiteHeader() {
   return (
@@ -45,6 +45,7 @@ export function StickyMobileCta() {
 }
 
 export function SiteFooter() {
+  const checkoutClick = useTrackedCheckoutClick();
   return (
     <footer className="border-t border-border bg-tint px-5 py-12 sm:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
@@ -52,7 +53,7 @@ export function SiteFooter() {
           <TdcLogo />
           <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-navy">
             <Link to="/">Masterclass</Link>
-            <Link to="/checkout" onClick={trackInitiateCheckout}>
+            <Link to="/checkout" onClick={checkoutClick}>
               Register
             </Link>
           </nav>
