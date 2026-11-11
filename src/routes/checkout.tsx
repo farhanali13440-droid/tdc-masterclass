@@ -7,7 +7,7 @@ import { EVENT_CURRENCY, EVENT_DATE, EVENT_FEE, EVENT_PRICE, EVENT_TIME, Floatin
 import { SiteFooter } from "@/components/tdc/site";
 import { supabase } from "@/integrations/supabase/client";
 import { createCheckoutLead, submitPaymentProof } from "@/lib/registration.functions";
-import { storePendingRegistration, trackMetaConversion } from "@/lib/meta-tracking";
+import { storePendingRegistration, trackFBCustomOnce, trackMetaConversion } from "@/lib/meta-tracking";
 
 export const Route = createFileRoute("/checkout")({
  head:()=>({meta:[{title:"Registration | TDC Diabetes Control Masterclass"},{name:"description",content:"Register for the TDC Diabetes Control Masterclass and submit your bank-transfer payment receipt."},{property:"og:title",content:"Registration | TDC Diabetes Control Masterclass"},{property:"og:description",content:"Reserve your place in The Diabetes Centre Pakistan's masterclass."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),
@@ -25,7 +25,7 @@ function CheckoutPage(){
  const navigate=useNavigate(); const [step,setStep]=useState<1|2>(1); const [values,setValues]=useState(initial); const [errors,setErrors]=useState<Errors>({}); const [file,setFile]=useState<File|null>(null); const [registration,setRegistration]=useState<{id:string;token:string}|null>(null); const [submitting,setSubmitting]=useState(false); const [formError,setFormError]=useState<string|null>(null); const started=useRef(false);
  useEffect(()=>{document.dispatchEvent(new CustomEvent("tdc:checkout-view"));},[]);
  useEffect(()=>{void trackMetaConversion("InitiateCheckout",{sessionKey:"initiatecheckout",value:EVENT_PRICE,currency:EVENT_CURRENCY});},[]);
- useEffect(()=>{if(step!==2||!registration)return;void trackMetaConversion("CompleteRegistration",{sessionKey:"completeregistration:"+registration.id,registrationId:registration.id});},[step,registration]);
+ useEffect(()=>{if(step!==2||!registration)return;void trackMetaConversion("CompleteRegistration",{sessionKey:"completeregistration:"+registration.id,registrationId:registration.id});void trackFBCustomOnce("RegistrationComplete", "custom:completeregistration:" + registration.id);},[step,registration]);
  const markStart=()=>{if(!started.current){started.current=true;document.dispatchEvent(new CustomEvent("tdc:registration-start"));void trackMetaConversion("InitiateCheckout",{sessionKey:"initiatecheckout",value:EVENT_PRICE,currency:EVENT_CURRENCY});}};
  const change=(name:keyof FormValues,value:string)=>{markStart();setValues((v)=>({...v,[name]:value}));};
  const validate=()=>{const parsed=schema.safeParse(values);const next:Errors={};if(!parsed.success) parsed.error.issues.forEach((i)=>{const k=i.path[0] as keyof FormValues;if(!next[k]) next[k]=i.message;});setErrors(next);return parsed.success?parsed.data:null;};
