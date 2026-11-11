@@ -204,7 +204,10 @@ export function FloatingWhatsApp() {
       href={WHATSAPP_LINK}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={trackContactClick}
+      onClick={() => {
+        trackContactClick();
+        void trackFBCustom("JoinWhatsAppCommunity");
+      }}
       aria-label="Chat with The Diabetes Centre Pakistan on WhatsApp"
       className="fixed right-4 bottom-24 z-40 grid h-12 w-12 place-items-center rounded-full bg-[#25D366] shadow-float transition-transform hover:scale-105 sm:bottom-6 sm:h-14 sm:w-14"
     >
