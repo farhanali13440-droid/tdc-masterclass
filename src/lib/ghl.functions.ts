@@ -8,9 +8,11 @@ import { z } from "zod";
  * creates another lead, payment update or notification. Returns no data.
  */
 export const retryRegistrationCrmSync = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ registrationId: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ registrationId: z.string().uuid(), checkoutToken: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     try {
+      const { getOwnedRegistration } = await import("./registration-token.server");
+      if (!(await getOwnedRegistration(data.registrationId, data.checkoutToken))) return { ok: true };
       const { retryGhlSyncForRegistration } = await import("./ghl.server");
       await retryGhlSyncForRegistration(data.registrationId);
     } catch (error) {

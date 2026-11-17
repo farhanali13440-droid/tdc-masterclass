@@ -90,8 +90,9 @@ function ThankYouPage() {
 
     // GHL safety net: delivers only CRM events still recorded as unsent for this
     // registration. Idempotent on the server, so a refresh never duplicates.
-    if (/^[0-9a-f-]{36}$/i.test(registrationId)) {
-      void retryRegistrationCrmSync({ data: { registrationId } }).catch(() => undefined);
+    const checkoutToken = pending?.id === registrationId ? pending.token : undefined;
+    if (/^[0-9a-f-]{36}$/i.test(registrationId) && checkoutToken) {
+      void retryRegistrationCrmSync({ data: { registrationId, checkoutToken } }).catch(() => undefined);
     }
 
     // Fire on mount for the registration saved by checkout, never a direct visit.
@@ -101,6 +102,7 @@ function ThankYouPage() {
       void trackMetaConversion("Purchase", {
         dedupeKey: `purchase:${registrationId}`,
         registrationId,
+        checkoutToken,
         value: EVENT_PRICE,
         currency: EVENT_CURRENCY,
       });

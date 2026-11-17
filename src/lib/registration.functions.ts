@@ -105,6 +105,27 @@ export const createCheckoutLead = createServerFn({ method: "POST" })
   });
 
 
+/** Issues a one-time upload URL inside the registration's own folder, only for its checkout token holder. */
+export const createProofUploadUrl = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      registrationId: z.string().uuid(),
+      checkoutToken: z.string().uuid(),
+      ext: z.enum(["jpg", "jpeg", "png", "pdf"]),
+    }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { getOwnedRegistration } = await import("./registration-token.server");
+    if (!(await getOwnedRegistration(data.registrationId, data.checkoutToken))) {
+      throw new Error("This checkout session is no longer valid. Please start again.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const path = data.registrationId + "/" + crypto.randomUUID() + "." + data.ext;
+    const { data: signed, error } = await supabaseAdmin.storage.from("payment-proofs").createSignedUploadUrl(path);
+    if (error || !signed) throw new Error("Unable to prepare the upload. Please try again.");
+    return { path: signed.path, token: signed.token };
+  });
+
 export const submitPaymentProof = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({

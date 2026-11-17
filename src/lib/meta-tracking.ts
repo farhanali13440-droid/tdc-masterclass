@@ -139,6 +139,7 @@ export type TrackOptions = {
   /** Suffix used inside the generated event id (usually the registration id). */
   eventIdSuffix?: string;
   registrationId?: string;
+  checkoutToken?: string | undefined;
   value?: number;
   currency?: string;
 };
@@ -214,9 +215,8 @@ async function dispatchMetaConversion(
         eventId,
         eventSourceUrl,
         eventTime,
-        ...(options.value !== undefined ? { value: options.value } : {}),
-        ...(options.value !== undefined ? { currency: options.currency ?? "PKR" } : {}),
         ...(options.registrationId ? { registrationId: options.registrationId } : {}),
+        ...(options.checkoutToken ? { checkoutToken: options.checkoutToken } : {}),
         userData: {
           ...(getFbp() ? { fbp: getFbp() } : {}),
           ...(getFbc() ? { fbc: getFbc() } : {}),
@@ -274,6 +274,7 @@ export type PendingRegistration = {
   id: string;
   /** True only when this browser actually completed a successful submission. */
   submitted?: boolean;
+  token?: string;
 };
 
 export function storePendingRegistration(value: PendingRegistration): void {

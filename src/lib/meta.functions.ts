@@ -16,17 +16,10 @@ const eventSchema = z.object({
   eventId: z.string().min(3).max(120),
   eventSourceUrl: z.string().url().max(1000),
   eventTime: z.number().int().positive().optional(),
-  value: z.number().nonnegative().optional(),
-  currency: z.string().length(3).optional(),
   registrationId: z.string().uuid().optional(),
+  checkoutToken: z.string().uuid().optional(),
   userData: z
     .object({
-      email: z.string().max(255).optional(),
-      phone: z.string().max(40).optional(),
-      firstName: z.string().max(100).optional(),
-      lastName: z.string().max(100).optional(),
-      city: z.string().max(100).optional(),
-      externalId: z.string().max(120).optional(),
       fbp: z.string().max(200).optional(),
       fbc: z.string().max(400).optional(),
     })
@@ -42,14 +35,22 @@ export const trackMetaEvent = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => eventSchema.parse(input))
   .handler(async ({ data }) => {
     try {
-      const { sendMetaCapiEvent, getRegistrationPaymentState } = await import("./meta.server");
+      const { sendMetaCapiEvent } = await import("./meta.server");
 
-      // Purchase is only ever reported for a real, submitted registration.
-      if (data.eventName === "Purchase") {
-        if (!data.registrationId) return { ok: false, skipped: "no-registration" as const };
-        const state = await getRegistrationPaymentState(data.registrationId);
-        if (!state.exists) return { ok: false, skipped: "registration-not-found" as const };
+      // Events tied to a registration require its private checkout token, and
+      // Purchase additionally requires a saved payment submission.
+      const registrationEvents = ["CompleteRegistration", "AddPaymentInfo", "SubmitApplication", "Lead", "Purchase"];
+      if (data.registrationId || data.eventName === "Purchase") {
+        if (!data.registrationId || !data.checkoutToken) return { ok: false };
+        const { getOwnedRegistration } = await import("./registration-token.server");
+        const owned = await getOwnedRegistration(data.registrationId, data.checkoutToken);
+        if (!owned) return { ok: false };
+        if (data.eventName === "Purchase" && !owned.payment_submitted_at) return { ok: false };
+      } else if (registrationEvents.includes(data.eventName) && data.eventName !== "Lead") {
+        return { ok: false };
       }
+      // Value is fixed server-side; callers cannot choose amounts.
+      const valued = data.eventName === "Purchase" || data.eventName === "InitiateCheckout";
 
       const result = await sendMetaCapiEvent(
         {
@@ -57,8 +58,7 @@ export const trackMetaEvent = createServerFn({ method: "POST" })
           eventId: data.eventId,
           eventSourceUrl: data.eventSourceUrl,
           ...(data.eventTime !== undefined ? { eventTime: data.eventTime } : {}),
-          ...(data.value !== undefined ? { value: data.value } : {}),
-          ...(data.currency !== undefined ? { currency: data.currency } : {}),
+          ...(valued ? { value: 499, currency: "PKR" } : {}),
           ...(data.userData ? { userData: data.userData } : {}),
         },
         {

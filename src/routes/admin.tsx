@@ -26,7 +26,7 @@ function AdminPage() {
   useEffect(() => { void load(); }, []);
   const exportCsv = () => {
     const header = ["Lead/Registration ID","Name","WhatsApp","Email","City","Age","Diabetes Status","Diabetes Type","Lead Status","Payment Status","Submission Date","Payment Submission Date"];
-    const quote = (value: unknown) => '"' + String(value ?? "").replace(/"/g, '""') + '"';
+    const quote = (value: unknown) => { let s = String(value ?? ""); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
     const csv = [header, ...rows.map((r) => [r.id,r.full_name,r.whatsapp,r.email,r.city,r.age,r.has_diabetes,r.diabetes_type,r.lead_status,r.payment_status,r.created_at,r.payment_submitted_at])].map((r) => r.map(quote).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a"); a.href = url; a.download = "tdc-masterclass-leads.csv"; a.click(); URL.revokeObjectURL(url);

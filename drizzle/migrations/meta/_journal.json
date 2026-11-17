@@ -29,6 +29,13 @@
       "when": 1790659800498,
       "tag": "0003_add_ghl_sync_events",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794896725210,
+      "tag": "0004_lock_down_public_writes",
+      "breakpoints": true
     }
   ]
 }

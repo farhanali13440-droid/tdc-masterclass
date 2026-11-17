@@ -42,7 +42,7 @@ function TdcLeadsPage() {
   }), [leads]);
   const exportCsv = () => {
     const header = ["Lead/Registration ID","Name","WhatsApp","Email","City","Age","Wants To Learn","Lead Status","Payment Status","Amount","Registration Date/Time","Payment Submission Date/Time"];
-    const q = (v: unknown) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+    const q = (v: unknown) => { let s = String(v ?? ""); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
     const csv = [header, ...filtered.map((x) => [x.id,x.full_name,x.whatsapp,x.email,x.city,x.age,x.learning_goal,x.lead_status,x.payment_status,x.amount_pkr,x.created_at,x.payment_submitted_at])].map((r) => r.map(q).join(",")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"})); a.download = "diabetes-control-masterclass-leads.csv"; a.click(); URL.revokeObjectURL(a.href);
   };
